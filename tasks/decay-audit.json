@@ -1,0 +1,35 @@
+{
+  "feature": "feat-003",
+  "date": "2026-07-30",
+  "sample": "tasks/decay-sample.json (seed 20260730, 20 of 643 tasks, 1 per site + 5 topped up)",
+  "method": "Each task checked by hand against the live site on 2026-07-30 using stock headed Chromium (scripts/probe-page.ts). Screenshots and page text under runs/feat-003/ (gitignored).",
+  "categories": {
+    "still-valid": "The site today supports what the task asks and a correct answer is obtainable. Time-relative tasks ('most recent', 'this month') count here even though the answer differs from 2024 — the task is defined relative to now.",
+    "changed": "The capability still exists but the task's specifics no longer match the site: something it names has been renamed, moved, or no longer displayed directly. Still attemptable; the 2024 reference answer is stale or the wording misleads.",
+    "impossible": "Cannot be completed as written today — required content or feature is gone, a hard-coded past date cannot be entered, or the site refuses automated access outright."
+  },
+  "counts": { "still-valid": 14, "changed": 2, "impossible": 4, "total": 20 },
+  "impossible_breakdown": { "site-decay": 2, "site-blocks-automation": 2 },
+  "results": [
+    { "id": "Allrecipes--16", "verdict": "still-valid", "evidence": "Search returns rated chocolate chip cookie recipes (Best Chocolate Chip Cookies, 19,450 Ratings); recipe pages carry Prep/Cook/Total Time. Requires headed browser — Allrecipes 402s headless (feat-002)." },
+    { "id": "Allrecipes--17", "verdict": "still-valid", "evidence": "Recipe /recipe/229764/easy-vegetarian-spinach-lasagna/ still live, 85 REVIEWS, individual review text visible." },
+    { "id": "Allrecipes--43", "verdict": "still-valid", "evidence": "Vegan pumpkin pie search returns candidates with ratings (Vegan Pumpkin Pie 9 Ratings, Amazing Vegan Pumpkin Pie 1 Rating). Whether one clears 4 stars AND >1h cook time is for the run to determine; the capability is intact." },
+    { "id": "Amazon--4", "verdict": "still-valid", "evidence": "Offer page /dp/B07V4GCFP9?aod=1&condition=used shows a Condition facet with 'Used - Good' and 'Used - Like New'. Caveat: prices render in INR from this location, so the 2024 USD reference answer will not match." },
+    { "id": "Apple--39", "verdict": "changed", "evidence": "support.apple.com/en-us/102656 is now titled 'If you forgot your Apple Account password' and states 'Apple ID is now Apple Account'. Task says 'Apple ID password'. Answerable; the terminology the task names no longer matches the page." },
+    { "id": "ArXiv--4", "verdict": "still-valid", "evidence": "/list/astro-ph.GA/recent renders per-day groupings and counts, e.g. 'Wed, 29 Jul 2026 (showing 38 of 38 entries)'. Time-relative, answer moves." },
+    { "id": "BBC News--28", "verdict": "impossible", "reason": "site-decay", "evidence": "/news/business/market-data redirects to an article dated 26 November 2024: 'The BBC has discontinued its market data feeds on both the website and red button (UK only) services.' The Market Data section the task asks for no longer exists, so neither does the data provider it asks to name." },
+    { "id": "Booking--20", "verdict": "impossible", "reason": "site-decay", "evidence": "Task hard-codes a stay from February 28 to March 2, 2024 — over two years past as of 2026-07-30 and not selectable. Also leap-year dependent: those dates are three nights only in 2024." },
+    { "id": "Cambridge Dictionary--34", "verdict": "impossible", "reason": "site-blocks-automation", "evidence": "dictionary.cambridge.org serves a Cloudflare 'Performing security verification' interstitial, HTTP 403, in both headless and headed stock Chromium (feat-002). The grammar content is presumably fine; we cannot reach it without evasion tooling, which is out of scope." },
+    { "id": "Coursera--26", "verdict": "changed", "evidence": "The 'Renewable Energy' Specialization is live, Beginner, and still contains 'Renewable Energy Futures' as Course 4; instructor Stephen R. Lawrence. But the page now states a fixed '4 weeks to complete at 10 hours a week' with no hours-per-week control, while the task asks for weeks 'if I spend 5 hours a week'. Derivable by arithmetic, not readable off the page as the task assumes." },
+    { "id": "ESPN--9", "verdict": "still-valid", "evidence": "espn.com/nba/teams lists 'LA Clippers' and 'Los Angeles Lakers'. Note ESPN's naming ('LA' vs 'Los Angeles') makes the count arguable, but it was equally arguable in 2024." },
+    { "id": "GitHub--39", "verdict": "still-valid", "evidence": "github.com/trending/developers?since=monthly renders a ranked list; #1 at check time was Cole Murray / background-agents. Time-relative." },
+    { "id": "Google Flights--2", "verdict": "still-valid", "evidence": "Google Flights resolves JFK->LHR ('New York to London'). The task's 'Jan. 22' carries no year, so it stays answerable against the next occurrence." },
+    { "id": "Google Flights--40", "verdict": "still-valid", "evidence": "travel/explore loads with the map-based destination browser. Origin defaults to the local city (Jaipur from here) and is user-settable to Seattle." },
+    { "id": "Google Map--4", "verdict": "still-valid", "evidence": "Directions Boston Logan -> North Station compute; route options rendered (Best 9 min / 23 min / 48 min)." },
+    { "id": "Google Map--37", "verdict": "still-valid", "evidence": "Maps search for parking in Salem MA returns results with Hours / All filters controls; directions available." },
+    { "id": "Google Map--40", "verdict": "still-valid", "evidence": "Maps search for lobster restaurants in Boston renders with Price / Rating / Hours filters; per-place reviews with star filtering still exist." },
+    { "id": "Google Search--7", "verdict": "impossible", "reason": "site-blocks-automation", "evidence": "google.com's homepage loads, but submitting a query from stock headed Chromium redirects to /sorry/index: 'Our systems have detected unusual traffic from your computer network.' The search itself is refused, so no Google Search task can be attempted without evasion tooling." },
+    { "id": "Huggingface--29", "verdict": "still-valid", "evidence": "huggingface.co/models?pipeline_tag=summarization&search=medical returns models with Updated dates and descriptions. 'Recent' is time-relative, so the answer moves." },
+    { "id": "Wolfram Alpha--5", "verdict": "still-valid", "evidence": "The query y''(z) + sin(y(z)) = 0 resolves with 'Differential equation solutions' and plot sections. Results render as images, which matters for serialization (feat-011) but not for validity." }
+  ]
+}

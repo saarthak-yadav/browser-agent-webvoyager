@@ -21,8 +21,15 @@ Format:
       amended to `glm-4.6v`. See the three 2026-07-30 entries below.
 - [x] Site reachability table, headless vs headed (feat-002) — **answered:
       1/15 blocked in both modes (Cambridge Dictionary), 1/15 headless-only
-      (Allrecipes), 13/15 reachable in both.** See the 2026-07-30 entry below.
-- [ ] Task decay: still-valid / changed / impossible (feat-003)
+      (Allrecipes), 13/15 landing pages reachable in both.** See the 2026-07-30
+      entry below. **Superseded in part by feat-003:** "13/15" is landing-page
+      load only. Google Search blocks on the first real query, so the count of
+      sites confirmed *usable* is at most 12/15. Do not quote 13/15 as
+      reachability.
+- [x] Task decay: still-valid / changed / impossible (feat-003) — **answered:
+      14 still-valid, 2 changed, 4 impossible out of 20** (of the 4 impossible,
+      2 are site decay and 2 are sites blocking automation). See the
+      2026-07-30 entry below.
 - [ ] Subset selection rule and final task count (feat-004)
 - [ ] Observation size distribution → token budget (feat-007)
 - [ ] Retry/replan constants and their justification (feat-010)
@@ -285,3 +292,96 @@ to about:blank" once in headed mode, then passed cleanly on an isolated re-probe
 (HTTP 200, 5629 chars). Recorded as a flake, not a block — but it is evidence
 that single-shot reachability results are noisy, and the table above should be
 read as one observation per cell, not a stable measurement.
+
+---
+
+## 2026-07-30 — feat-003: task-set decay audit, 20 of 643 tasks
+
+**Ran:** `bun run scripts/sample-decay-tasks.ts` to draw the sample, then checked
+each task by hand against the live site with `bun run scripts/probe-page.ts`
+(stock headed Chromium, the mode feat-002 settled on). Task set pulled from the
+WebVoyager repo: `tasks/WebVoyager_data.jsonl`, 643 tasks over 15 sites.
+
+**Sampling rule** (in `scripts/sample-decay-tasks.ts`, seed `20260730`,
+mulberry32, no `Math.random`): sites alphabetical, tasks id-ordered, draw 1 task
+per site so all 15 are represented, then top up to 20 from the remaining pool.
+Re-running reproduces the sample byte-for-byte — verified by md5 across two runs.
+Every-site coverage was chosen over proportional sampling because decay was
+expected to be site-specific, and a proportional draw of 20 would leave sites
+unrepresented.
+
+**Categories, fixed before any site was opened** (same discipline T5.1 asks for
+in the failure taxonomy — defining after looking invites fitting the categories
+to the result):
+
+- **still-valid** — the site supports what the task asks and an answer is
+  obtainable today. Time-relative tasks ("most recent", "this month") count
+  here: the answer moves, the task does not.
+- **changed** — the capability exists but something the task names has been
+  renamed, moved, or is no longer displayed directly. Attemptable; the 2024
+  reference answer is stale or the wording misleads.
+- **impossible** — cannot be completed as written today: content or feature
+  gone, a hard-coded past date, or the site refuses automated access.
+
+**Got: 14 still-valid, 2 changed, 4 impossible.** Per-task verdicts with
+evidence in `tasks/decay-audit.json`. The four non-valid ones:
+
+| Task | Verdict | What is actually wrong |
+|---|---|---|
+| BBC News--28 | impossible (decay) | `/news/business/market-data` now redirects to an article dated 26 Nov 2024: "The BBC has discontinued its market data feeds on both the website and red button (UK only) services." The task asks which company the Market Data section sources from; the section is gone, so the question has no answer. |
+| Booking--20 | impossible (decay) | Hard-codes "February 28 to March 2, 2024" — over two years past, not selectable in the date picker. Also leap-year dependent: those dates are a *three*-night stay only in 2024. |
+| Cambridge Dictionary--34 | impossible (blocked) | Cloudflare interstitial, HTTP 403, headless and headed (feat-002). Content is presumably fine; we cannot reach it without evasion tooling. |
+| Google Search--7 | impossible (blocked) | See below — this one changes the plan. |
+| Apple--39 | changed | `support.apple.com/en-us/102656` is now "If you forgot your **Apple Account** password" and says "Apple ID is now Apple Account". The task says "Apple ID password". Still answerable. |
+| Coursera--26 | changed | The Renewable Energy Specialization is live and still contains "Renewable Energy Futures" (Course 4, instructor Stephen R. Lawrence), but the page now shows a fixed "4 weeks to complete at 10 hours a week" with no hours-per-week control. The task asks for weeks "if I spend 5 hours a week" — now an arithmetic derivation rather than something readable off the page. |
+
+**The Google Search finding is the important one, and it is not decay.**
+`google.com` loads fine — feat-002 marked it reachable. But *submitting a query*
+from stock headed Chromium redirects to `/sorry/index`:
+
+```
+Our systems have detected unusual traffic from your computer network.
+This page checks to see if it's really you sending the requests, and not a robot.
+```
+
+That is exactly the failure mode feat-002 warned about in caveat 3: landing-page
+reachability is a floor, not a guarantee, and the block lands on the first real
+action. Google Search is **43 of 643 tasks**. Consequences:
+
+- Landing-page reachability overstates what is attemptable. feat-002's
+  "13/15 reachable" is an upper bound; the real figure is at most 12/15.
+- **feat-004 must not assume a site is usable because its homepage loaded.**
+  The subset selection needs a per-site *first-action* probe, not just a `goto`.
+- The blocked-site count for the resume is now **2 of 15 confirmed blocked**
+  (Cambridge Dictionary, Google Search) with the rest unproven beyond page load.
+  Do not write "13/15 reachable" anywhere; it will not survive the real run.
+
+**Concluded:**
+
+1. **The honest denominator is not 643.** In this sample, 4/20 (20%) cannot be
+   attempted as written, splitting evenly between genuine site decay (2) and
+   sites refusing automation (2). Those are different failures and must stay
+   separated: decay is the benchmark aging, blocking is the environment. Neither
+   is the agent failing, and feat-018 must report pass rate over *attempted* and
+   over *reachable-and-valid* separately.
+2. **A further 2/20 (10%) are answerable but drifted**, so a strict match against
+   2024 reference answers would score them wrong for reasons that have nothing
+   to do with the agent. This is a direct argument for the feat-017 human
+   agreement sample: the judge has to be checked against tasks whose ground truth
+   has quietly moved.
+3. **20 tasks is a small sample and the counts carry real uncertainty.** 4/20 has
+   a 95% binomial CI of roughly 6%–44%. Report it as "4 of 20 sampled", never as
+   "20% of WebVoyager has decayed" — the second claim the sample cannot support.
+4. **Time-relative tasks were counted valid on purpose** ("most recent papers",
+   "trending this month"). They are answerable, but their ground truth changes
+   between runs, so they are not reproducible across time. That is a limitation
+   for the README, not a decay finding.
+5. **Locale drift is a live confound.** Amazon rendered prices in INR and Google
+   Flights defaulted its origin to the local city, both from IP geolocation.
+   WebVoyager's 2024 reference answers assume a US locale. This is not decay and
+   was not counted as such, but it will make some answers look wrong. Decide the
+   locale policy in feat-004 and write it down.
+
+Screenshots and page text for all 20 checks are in `runs/feat-003/` (gitignored;
+regenerate with `scripts/probe-page.ts`). The Google block page includes the
+originating public IP, which is why that directory stays out of git.

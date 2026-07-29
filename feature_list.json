@@ -21,8 +21,8 @@
       "name": "Task set decay audit",
       "description": "Sample ~20 WebVoyager tasks and check by hand whether each site still supports what the task asks. Done when: counts of still-valid / changed / impossible are in docs/DECISIONS.md. This decides the honest denominator and is itself a reportable result.",
       "dependencies": [],
-      "status": "not-started",
-      "evidence": ""
+      "status": "done",
+      "evidence": "Sample: `bun run scripts/sample-decay-tasks.ts` -> `643 tasks in 15 sites -> sample of 20`, seed 20260730, reproducible (identical md5 across two runs), written to tasks/decay-sample.json. Each of the 20 checked by hand against the live site on 2026-07-30 with `bun run scripts/probe-page.ts` (stock headed Chromium); per-task verdicts and evidence in tasks/decay-audit.json. COUNTS: still-valid 14, changed 2, impossible 4 (of the 4: 2 site decay, 2 site blocks automation). Impossible: BBC News--28 (BBC discontinued market data feeds, article dated 26 Nov 2024 — the section the task names is gone), Booking--20 (hard-coded Feb 28-Mar 2 2024, over two years past), Cambridge Dictionary--34 (Cloudflare 403 both modes, per feat-002), Google Search--7 (query submission redirects to /sorry/index, 'Our systems have detected unusual traffic from your computer network'). Changed: Apple--39 ('Apple ID is now Apple Account', page retitled), Coursera--26 (specialization and 'Renewable Energy Futures' course still live but hours-per-week control gone; page fixed at '4 weeks to complete at 10 hours a week'). Key consequence recorded in docs/DECISIONS.md: the Google Search block lands on the first ACTION, not on page load, so feat-002's 13/15 landing-page figure overstates usability — feat-004 needs a first-action probe per site, not just a goto."
     },
     {
       "id": "feat-004",

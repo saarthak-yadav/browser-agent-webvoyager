@@ -1,0 +1,129 @@
+{
+  "seed": 20260730,
+  "source": "tasks/WebVoyager_data.jsonl",
+  "totalTasks": 643,
+  "sampleSize": 20,
+  "rule": "1 task per site (15 sites) + 5 more drawn from the remaining pool, mulberry32 seeded 20260730, sites alphabetical and tasks id-ordered before drawing",
+  "tasks": [
+    {
+      "web_name": "Allrecipes",
+      "id": "Allrecipes--16",
+      "ques": "Find a five-star rated chocolate chip cookie recipe that takes less than 1 hour to make on Allrecipes. Note how many reviews the recipe has and the main ingredients required.",
+      "web": "https://www.allrecipes.com/"
+    },
+    {
+      "web_name": "Allrecipes",
+      "id": "Allrecipes--17",
+      "ques": "Find the Easy Vegetarian Spinach Lasagna recipe on Allrecipes and tell me what the latest review says.",
+      "web": "https://www.allrecipes.com/"
+    },
+    {
+      "web_name": "Allrecipes",
+      "id": "Allrecipes--43",
+      "ques": "Find a recipe for a vegan pumpkin pie on Allrecipes with a minimum four-star rating and a total cook time exceeding 1 hour.",
+      "web": "https://www.allrecipes.com/"
+    },
+    {
+      "web_name": "Amazon",
+      "id": "Amazon--4",
+      "ques": "Find the used Nintendo Switch Lite on Amazon then filter by 'Used - Good', tell me the cheapest one that is 'Used - Good'.",
+      "web": "https://www.amazon.com/"
+    },
+    {
+      "web_name": "Apple",
+      "id": "Apple--39",
+      "ques": "Find solutions on Apple's website if you forgot your Apple ID password.",
+      "web": "https://www.apple.com/"
+    },
+    {
+      "web_name": "ArXiv",
+      "id": "ArXiv--4",
+      "ques": "Find the most recent research papers in Astrophysics of Galaxies. How many papers have been announced in the last day?",
+      "web": "https://arxiv.org/"
+    },
+    {
+      "web_name": "BBC News",
+      "id": "BBC News--28",
+      "ques": "Find the Market Data section on BBC News and tell me which company the data comes from.",
+      "web": "https://www.bbc.com/news/"
+    },
+    {
+      "web_name": "Booking",
+      "id": "Booking--20",
+      "ques": "Locate a hotel in Rome with a good rating (7 or above) that offers free cancellation and breakfast included, for a three-night stay from February 28 to March 2, 2024, for two adults.",
+      "web": "https://www.booking.com/"
+    },
+    {
+      "web_name": "Cambridge Dictionary",
+      "id": "Cambridge Dictionary--34",
+      "ques": "Use the Cambridge Dictionary to understand the rules for forming and using comparative and superlative adjectives in English Grammar, including example sentences.",
+      "web": "https://dictionary.cambridge.org/"
+    },
+    {
+      "web_name": "Coursera",
+      "id": "Coursera--26",
+      "ques": "Identify a Specialization on Coursera that offers an overview of 'Renewable Energy'. The Specialization should be beginner-level and include a course on Renewable Energy Futures. Note the instructor's name and the number of weeks required to complete the course if I spend 5 hours a week.",
+      "web": "https://www.coursera.org/"
+    },
+    {
+      "web_name": "ESPN",
+      "id": "ESPN--9",
+      "ques": "Search on ESPN for how many teams have Los Angeles in their name and how many of them are NBA.",
+      "web": "https://www.espn.com/"
+    },
+    {
+      "web_name": "GitHub",
+      "id": "GitHub--39",
+      "ques": "Browse the GitHub Trending and find out which developer is currently ranked first this month and the corresponding repository.",
+      "web": "https://github.com/"
+    },
+    {
+      "web_name": "Google Flights",
+      "id": "Google Flights--2",
+      "ques": "Find the lowest fare from all eligible one-way flights for 1 adult from JFK to Heathrow on Jan. 22.",
+      "web": "https://www.google.com/travel/flights/"
+    },
+    {
+      "web_name": "Google Flights",
+      "id": "Google Flights--40",
+      "ques": "Browse destinations on the Google Flights homepage from Seattle, look at destinations on a map, and recommend some famous places to travel that are within a reasonable distance and price.",
+      "web": "https://www.google.com/travel/flights/"
+    },
+    {
+      "web_name": "Google Map",
+      "id": "Google Map--37",
+      "ques": "Locate a parking area in Salem and find a route from there to Marblehead, including map directions for better understanding.",
+      "web": "https://www.google.com/maps/"
+    },
+    {
+      "web_name": "Google Map",
+      "id": "Google Map--4",
+      "ques": "Plan a trip from Boston Logan Airport to North Station.",
+      "web": "https://www.google.com/maps/"
+    },
+    {
+      "web_name": "Google Map",
+      "id": "Google Map--40",
+      "ques": "Find a restaurant in Boston that eats Boston lobster and asks for a rating of 4.6 or higher, and check out what a one-star review says.",
+      "web": "https://www.google.com/maps/"
+    },
+    {
+      "web_name": "Google Search",
+      "id": "Google Search--7",
+      "ques": "Find the software requirements for iPhones that support AirDrop's ability to continue transmitting over the web when out of range.",
+      "web": "https://www.google.com/"
+    },
+    {
+      "web_name": "Huggingface",
+      "id": "Huggingface--29",
+      "ques": "Summarize the description of the recent open-source NLP model released on Hugging Face for medical summarization.",
+      "web": "https://huggingface.co/"
+    },
+    {
+      "web_name": "Wolfram Alpha",
+      "id": "Wolfram Alpha--5",
+      "ques": "Show the solution of y\"(z) + sin(y(z)) = 0 from wolframalpha.",
+      "web": "https://www.wolframalpha.com/"
+    }
+  ]
+}
