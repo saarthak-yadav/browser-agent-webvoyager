@@ -3,10 +3,10 @@
     {
       "id": "feat-001",
       "name": "Vision model availability [GATE]",
-      "description": "GATE. Send one small image to glm-5v-turbo via the z.ai endpoint. Done when: a correct description comes back. If it fails, set status=blocked, record the error in docs/DECISIONS.md, and STOP — the vision fallback claim cannot be built on this plan and that is a conversation, not something to work around with a text-only substitute.",
+      "description": "GATE. Send one small image to the vision model via the z.ai endpoint. Done when: a correct description comes back. If it fails, set status=blocked, record the error in docs/DECISIONS.md, and STOP — the vision fallback claim cannot be built on this plan and that is a conversation, not something to work around with a text-only substitute. AMENDED 2026-07-30: originally specified against glm-5v-turbo, which the subscription refuses (1311); the plan now names glm-4.6v, which passes.",
       "dependencies": [],
-      "status": "not-started",
-      "evidence": ""
+      "status": "done",
+      "evidence": "2026-07-30. `bun run scripts/check-vision.ts [model]` sends a 240x240 PNG (2x2 colour grid, ground truth {topLeft:green, topRight:purple, bottomLeft:orange, bottomRight:blue}) as bare base64 to https://api.z.ai/api/coding/paas/v4. (1) glm-5v-turbo — FAIL: `HTTP 429 in 493ms / {\"error\":{\"code\":\"1311\",\"message\":\"Your current subscription plan does not yet include access to GLM-5V-Turbo\"}}`. Control on glm-4.7 with the same key and base URL returned HTTP 200 content \"ok\", so this is subscription entitlement, not config. (2) glm-4.6v — PASS: `HTTP 200 in 2825ms`, usage total_tokens 281, response `{\"topLeft\":\"green\",\"topRight\":\"purple\",\"bottomLeft\":\"orange\",\"bottomRight\":\"blue\"}`, 4/4 quadrants correct. So vision IS available on this plan, via glm-4.6v (the model behind z.ai's Vision MCP Server for GLM Coding Plan users). The plan was amended the same day to name glm-4.6v (feat-013, feat-016, ARCHITECTURE.md, TASKS.md, PLAN.md, README.md, AGENTS.md), so the gate is met against the model the project will actually use. Note for implementers: image_url.url takes a BARE base64 string, not a data: URI. See docs/DECISIONS.md, all three 2026-07-30 entries."
     },
     {
       "id": "feat-002",
@@ -98,7 +98,7 @@
     },
     {
       "id": "feat-013",
-      "name": "Vision step via glm-5v-turbo",
+      "name": "Vision step via glm-4.6v",
       "description": "On trigger, send the screenshot alongside the text observation. Done when: an episode that fails without vision succeeds with it, demonstrated from both traces.",
       "dependencies": ["feat-001", "feat-012"],
       "status": "not-started",
@@ -123,7 +123,7 @@
     {
       "id": "feat-016",
       "name": "LLM judge",
-      "description": "WebVoyager judging protocol using glm-5v-turbo on the final screenshot and answer. Done when: verdicts with retained reasoning exist for the pilot run.",
+      "description": "WebVoyager judging protocol using glm-4.6v on the final screenshot and answer. Done when: verdicts with retained reasoning exist for the pilot run. Note for feat-017: the judge (glm-4.6v) is a different model from the agent (glm-4.7/glm-5.2), which slightly weakens the 'GLM grades GLM' objection — but it is the same vendor, so the blind human agreement sample is still required.",
       "dependencies": ["feat-001", "feat-015"],
       "status": "not-started",
       "evidence": ""

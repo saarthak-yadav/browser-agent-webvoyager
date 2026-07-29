@@ -7,7 +7,7 @@ task ──> Agent loop ──> Observation builder ──> Playwright page
              │                  │                    │
              │                  ├── a11y tree serializer   (arm A)
              │                  ├── set-of-marks renderer  (arm B)
-             │                  └── vision fallback (glm-5v-turbo, on trigger)
+             │                  └── vision fallback (glm-4.6v, on trigger)
              │
              ├── Action executor (bounded action space)
              ├── Retry / replan policy (bounded)
@@ -82,7 +82,7 @@ Primary triggers, any of:
 
 Secondary: the model explicitly emits a `need_screenshot` request.
 
-On trigger, send the screenshot to `glm-5v-turbo` alongside the text
+On trigger, send the screenshot to `glm-4.6v` alongside the text
 observation. **Log which trigger fired**, so the headline percentage can be
 broken down by reason. That breakdown is a better interview answer than the
 percentage alone.
@@ -114,7 +114,7 @@ Traces are the actual deliverable. A pass rate without traces is unverifiable.
 ## Judging
 
 WebVoyager protocol: a vision model reviews the final screenshot and the agent's
-answer against the task. Run with `glm-5v-turbo`.
+answer against the task. Run with `glm-4.6v`.
 
 Then hand-label a stratified sample of ≥30 episodes and report agreement. See
 `docs/RESUME-CLAIMS.md` for why this is not optional.
@@ -143,7 +143,7 @@ often" is a legitimate and more interesting result.
 ## Stack
 
 TypeScript · Playwright · GLM via z.ai (`glm-4.7` or `glm-5.2` for the agent,
-`glm-5v-turbo` for vision and judging) · Bun.
+`glm-4.6v` for vision and judging) · Bun.
 
 Chromium, headed or headless as G2 determines, with a standard user agent and no
 evasion tooling.

@@ -39,8 +39,10 @@ Detail and acceptance checks: `docs/TASKS.md`.
 
 Answer these in an afternoon, before writing the agent:
 
-1. **Does `glm-5v-turbo` serve images on the z.ai coding plan?** The vision
+1. **Does a GLM vision model serve images on the z.ai coding plan?** The vision
    fallback bullet depends on it. Send one small image, get a description back.
+   *Answered 2026-07-30: `glm-5v-turbo` is not on the plan (error 1311);
+   `glm-4.6v` is and passed the gate. The plan now names `glm-4.6v`.*
 2. **Can headless Playwright reach the benchmark sites?** Test ~5 of the 15.
    Expect resistance from the commerce and travel sites. If a site blocks,
    record it — do not build evasion.
@@ -74,7 +76,8 @@ Answer these in an afternoon, before writing the agent:
 
 ## Open questions
 
-- Does `glm-5v-turbo` work on this plan? → G1
+- Does a GLM vision model work on this plan? → G1 (answered: `glm-4.6v` yes,
+  `glm-5v-turbo` no)
 - Which sites are reachable? → G2
 - What fraction of tasks are still valid? → G3
 - Which serialization wins? → feat-018

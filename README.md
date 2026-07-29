@@ -76,5 +76,5 @@ checked against what actually happened.
 
 ## Stack
 
-TypeScript · Playwright · Bun · GLM via z.ai (`glm-5v-turbo` for vision and
+TypeScript · Playwright · Bun · GLM via z.ai (`glm-4.6v` for vision and
 judging)

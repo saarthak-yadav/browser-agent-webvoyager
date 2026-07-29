@@ -83,7 +83,7 @@ starts cold with only those files.
 ## Stack
 
 TypeScript · Playwright · Bun · GLM via z.ai (`glm-4.7`/`glm-5.2` for the agent,
-`glm-5v-turbo` for vision and judging).
+`glm-4.6v` for vision and judging).
 
 Secrets in `.env` (gitignored). Never commit a key, never commit screenshots
 containing personal data.

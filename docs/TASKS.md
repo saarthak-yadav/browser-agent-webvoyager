@@ -8,7 +8,7 @@ its check passes and you have seen the output.
 ## M0 — Gates
 
 ### G1 — Vision model availability  ⚠️ GATE
-Send one small image to `glm-5v-turbo` through the z.ai endpoint configured in
+Send one small image to `glm-4.6v` through the z.ai endpoint configured in
 `~/.pi/agent/`.
 
 **Check:** a correct description comes back.
@@ -102,7 +102,7 @@ Implement the triggers from ARCHITECTURE.md, each logged by name.
 
 **Check:** a canvas-heavy page fires the trigger; a plain text page does not.
 
-### T3.2 — Vision step via glm-5v-turbo
+### T3.2 — Vision step via glm-4.6v
 On trigger, send screenshot plus text observation.
 
 **Check:** an episode that fails without vision succeeds with it, shown from
@@ -125,7 +125,7 @@ interruption, and full trace capture.
 traces for every episode.
 
 ### T4.2 — LLM judge
-WebVoyager protocol using `glm-5v-turbo` on the final screenshot and answer.
+WebVoyager protocol using `glm-4.6v` on the final screenshot and answer.
 
 **Check:** judge verdicts recorded for the pilot, with reasoning retained.
 
