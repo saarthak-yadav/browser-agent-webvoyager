@@ -13,8 +13,8 @@
       "name": "Site reachability audit",
       "description": "Launch Playwright against ~5 WebVoyager sites spanning easy and hard (Cambridge Dictionary, ArXiv, GitHub, Amazon, Booking). Standard Chromium, standard user agent, NO evasion tooling. Done when: docs/DECISIONS.md holds a table of site, headless result, headed result, and what blocked it. A blocked site is a finding to report, not a problem to engineer around.",
       "dependencies": [],
-      "status": "not-started",
-      "evidence": ""
+      "status": "done",
+      "evidence": "Ran `bun run scripts/check-reachability.ts --mode=headless` -> `headless ok=13 blocked=2 degraded=0 error=0` and `--mode=headed` -> `headed ok=14 blocked=1 degraded=0 error=0`, across all 15 WebVoyager sites (spec asked ~5; ran all 15 because feat-004 needs the full picture). Stock Chromium 151.0.7922.34, no evasion tooling; headless UA `HeadlessChrome/151.0.7922.34`, headed UA `Chrome/151.0.0.0`. BLOCKED both modes: Cambridge Dictionary, `BLOCKED  Cambridge Dictionary   4133ms  interstitial phrases: just a moment (HTTP 403)` — screenshot shows the Cloudflare 'Performing security verification' page. BLOCKED headless only: Allrecipes, `BLOCKED  Allrecipes  4079ms  HTTP 402 on the main document`, vs headed `OK  Allrecipes  4798ms  HTTP 200, 5837 chars of text, 356 interactive elements`. Other 13 sites OK in both modes (Amazon and Booking return HTTP 202, not 200, with full content). Full table + caveats in docs/DECISIONS.md '2026-07-30 — feat-002'; raw per-site JSON in runs/feat-002/results.json, screenshots in runs/feat-002/{headless,headed}/ (gitignored, regenerate with the script)."
     },
     {
       "id": "feat-003",

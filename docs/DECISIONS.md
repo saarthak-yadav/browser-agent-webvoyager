@@ -19,7 +19,9 @@ Format:
 - [x] A GLM vision model serves images on this plan (feat-001) — **answered:
       `glm-5v-turbo` no (1311), `glm-4.6v` yes** (4/4 on the gate). The plan was
       amended to `glm-4.6v`. See the three 2026-07-30 entries below.
-- [ ] Site reachability table, headless vs headed (feat-002)
+- [x] Site reachability table, headless vs headed (feat-002) — **answered:
+      1/15 blocked in both modes (Cambridge Dictionary), 1/15 headless-only
+      (Allrecipes), 13/15 reachable in both.** See the 2026-07-30 entry below.
 - [ ] Task decay: still-valid / changed / impossible (feat-003)
 - [ ] Subset selection rule and final task count (feat-004)
 - [ ] Observation size distribution → token budget (feat-007)
@@ -180,3 +182,106 @@ Consequences to carry forward:
 - Rejected alternatives: upgrading the plan for `glm-5v-turbo` (cost, no benefit
   established over `glm-4.6v`), and cutting the vision fallback from scope
   (would have removed two headline results).
+
+---
+
+## 2026-07-30 — feat-002: site reachability, headless vs headed, no evasion
+
+**Ran:** `bun run scripts/check-reachability.ts --mode=headless` and
+`--mode=headed`, stock Playwright Chromium 151.0.7922.34 on macOS arm64.
+
+Scope note: `docs/TASKS.md` G2 asks for ~5 sites. This ran **all 15** WebVoyager
+sites instead — the marginal cost was a few minutes and feat-004 needs the full
+picture to stratify a subset. The five named in the spec (Cambridge, ArXiv,
+GitHub, Amazon, Booking) are all in the table.
+
+Method: one fresh browser context per site (no shared cookies, no warmed-up
+reputation), `goto` the WebVoyager start URL, wait for DOMContentLoaded plus a
+4s settle so client-side interstitials can render, then record HTTP status,
+title, visible text length, a count of interactive elements, and a screenshot.
+Classification is generic — HTTP status plus ~20 interstitial phrases that any
+bot wall uses. There is no per-domain branch in the script.
+
+**No evasion, per AGENTS.md.** No stealth plugin, no UA override, no fingerprint
+patching, no CAPTCHA handling. The user agent is whatever the build sends, and
+the two modes send *different* ones — this is part of the finding, not noise:
+
+- headless: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36`
+- headed:   `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36`
+
+The headless shell announces itself as `HeadlessChrome`. Any headless-only block
+below could be that string, the missing GUI surface, or both — this run does not
+separate them, and deliberately did not try, since separating them means
+spoofing the UA.
+
+**Got:**
+
+| Site | Headless | Headed | What blocked it |
+|---|---|---|---|
+| Cambridge Dictionary | **BLOCKED** HTTP 403 | **BLOCKED** HTTP 403 | Cloudflare interstitial, "Performing security verification … verifies you are not a bot". Screenshot confirms the challenge page, not a transient. |
+| Allrecipes | **BLOCKED** HTTP 402 | OK HTTP 200 (5837 chars, 356 controls) | Headless only. 402 access-denied page: "If you are a reader experiencing an access issue, please contact support@people.inc". Fully functional headed. |
+| ArXiv | OK 200 | OK 200 | — |
+| GitHub | OK 200 | OK 200 | — |
+| Hugging Face | OK 200 | OK 200 | — |
+| Wolfram Alpha | OK 200 | OK 200 | — |
+| Apple | OK 200 | OK 200 | — |
+| BBC News | OK 200 | OK 200 | — |
+| Coursera | OK 200 | OK 200 | — |
+| ESPN | OK 200 | OK 200 | — |
+| Google Search | OK 200 | OK 200 | — |
+| Google Maps | OK 200 | OK 200 | — |
+| Google Flights | OK 200 | OK 200 | — |
+| Amazon | OK 202 | OK 202 | — (202 is Amazon's normal landing status here, content renders fully) |
+| Booking.com | OK 202 | OK 202 | — |
+
+Totals: **headless 13/15 reachable, 2 blocked. Headed 14/15 reachable, 1 blocked.**
+
+Raw per-site JSON in `runs/feat-002/results.json`; screenshots in
+`runs/feat-002/{headless,headed}/<site>.png`. Both are gitignored — regenerate
+with the script.
+
+**Concluded:**
+
+1. **Cambridge Dictionary is unreachable to this agent in either mode.** It is
+   one of the 15 WebVoyager sites, so its tasks cannot be attempted honestly.
+   feat-004 must either drop it from the subset or carry it as a known-blocked
+   stratum, and feat-018 must report pass rate over *reachable* separately from
+   over *attempted* — this entry is the first concrete reason that second
+   denominator exists.
+2. **Allrecipes is a headless-only block**, so the benchmark run should be
+   **headed**. That is a run-configuration choice, not evasion: it is the stock
+   browser in its normal mode. Headed costs wall-clock and needs a GUI session,
+   which constrains how feat-014's concurrency is scheduled.
+3. **Landing-page reachability is a floor, not a guarantee.** Every OK above is
+   "the front page loaded". A site can serve its homepage happily and challenge
+   on search or pagination, which is where WebVoyager tasks actually go. Expect
+   the blocked count to rise during the real run; feat-020's taxonomy needs a
+   non-agent "site blocked mid-episode" category to absorb it.
+4. **Amazon and Booking return HTTP 202, not 200**, with full content. Anything
+   downstream that gates on `status === 200` would wrongly call two of the
+   hardest sites unreachable.
+
+**Two classifier corrections made during the run, recorded so the numbers above
+are not mistaken for first-attempt output:**
+
+- The first pass flagged Google Search as `degraded` on a "near-empty page" rule
+  (`textChars < 200 || interactive < 5`). The screenshot showed a perfectly
+  normal Google homepage — it is genuinely ~185 chars of text with ~50 controls.
+  The rule became `textChars < 200 && interactive < 20`. **A low-text landing
+  page is not a blocked one**, and the screenshot is what caught it.
+- Allrecipes' 402 was initially classified `degraded` because 402 was not in the
+  hard-status list. It is an access denial and now classifies as `blocked`.
+
+**One harness bug worth carrying forward, since feat-014 will hit it:** the
+first `--mode=both` attempt wedged on site 2 in headed mode for 12 minutes with
+no output. Playwright's own timeouts did not cover it — a headed Chromium can
+hang inside `newContext()`, before any navigation timeout applies. Fixed with a
+hard 120s wall-clock deadline per site plus browser relaunch on failure. **The
+benchmark runner needs the same backstop**; per-episode caps built only from
+Playwright timeouts will not hold.
+
+A separate transient: ESPN threw "Navigation … interrupted by another navigation
+to about:blank" once in headed mode, then passed cleanly on an isolated re-probe
+(HTTP 200, 5629 chars). Recorded as a flake, not a block — but it is evidence
+that single-shot reachability results are noisy, and the table above should be
+read as one observation per cell, not a stable measurement.
