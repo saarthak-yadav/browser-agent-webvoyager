@@ -1,0 +1,212 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Vision model availability [GATE]",
+      "description": "GATE. Send one small image to glm-5v-turbo via the z.ai endpoint. Done when: a correct description comes back. If it fails, set status=blocked, record the error in docs/DECISIONS.md, and STOP — the vision fallback claim cannot be built on this plan and that is a conversation, not something to work around with a text-only substitute.",
+      "dependencies": [],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-002",
+      "name": "Site reachability audit",
+      "description": "Launch Playwright against ~5 WebVoyager sites spanning easy and hard (Cambridge Dictionary, ArXiv, GitHub, Amazon, Booking). Standard Chromium, standard user agent, NO evasion tooling. Done when: docs/DECISIONS.md holds a table of site, headless result, headed result, and what blocked it. A blocked site is a finding to report, not a problem to engineer around.",
+      "dependencies": [],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-003",
+      "name": "Task set decay audit",
+      "description": "Sample ~20 WebVoyager tasks and check by hand whether each site still supports what the task asks. Done when: counts of still-valid / changed / impossible are in docs/DECISIONS.md. This decides the honest denominator and is itself a reportable result.",
+      "dependencies": [],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-004",
+      "name": "Task subset selection",
+      "description": "Select ~100 tasks stratified across all 15 sites using the reachability and decay findings. Done when: tasks/subset.json exists alongside a written selection rule a reader could reproduce.",
+      "dependencies": ["feat-002", "feat-003"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-005",
+      "name": "Playwright driver and action space",
+      "description": "Implement the seven actions (click, type, scroll, navigate, back, wait, answer). Nothing site-specific. Done when: a scripted sequence completes a search on two different sites through the same code path.",
+      "dependencies": ["feat-002"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-006",
+      "name": "Accessibility tree serializer (arm A)",
+      "description": "CDP Accessibility.getFullAXTree, filtered to interactive and meaningful nodes, with stable per-step numeric ids. Done when: on three sites, every visibly clickable primary control appears in the serialization with a usable id.",
+      "dependencies": ["feat-005"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-007",
+      "name": "Token budget and truncation policy [MEASUREMENT]",
+      "description": "MEASUREMENT. Count tokens per observation, apply the documented priority order, record truncation. Done when: the observation-size distribution across at least 20 pages is in docs/DECISIONS.md and the budget is chosen FROM that distribution rather than guessed. The budget is a resume number.",
+      "dependencies": ["feat-006"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-008",
+      "name": "Episode traces",
+      "description": "JSONL plus screenshots capturing per step: observation size, tokens in/out, chosen action, result, latency, vision trigger. Done when: an episode can be fully reconstructed from its trace alone. Traces are the deliverable — never run the benchmark without them.",
+      "dependencies": ["feat-005"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-009",
+      "name": "Agent loop",
+      "description": "Observe, plan, act against GLM. Strict action parsing — a malformed action is a logged failed step, not a crash. Done when: the agent completes one easy task end to end, such as a dictionary lookup or an ArXiv search.",
+      "dependencies": ["feat-006", "feat-008"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-010",
+      "name": "Bounded retry and replan policy",
+      "description": "Implement MAX_ACTION_RETRIES, MAX_REPLANS, MAX_STEPS, MAX_WALLCLOCK_MS, keeping the retry path distinct from the replan path. Done when: a forced failure (a bad element id) produces exactly one retry, then a replan, then termination within caps — verified from the trace. Know all four constants by heart; they are the substance of the resume claim.",
+      "dependencies": ["feat-009"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-011",
+      "name": "Termination and answer extraction",
+      "description": "The answer action ends an episode; caps end it otherwise with a recorded reason. Done when: every episode terminates with an explicit recorded reason and nothing hangs.",
+      "dependencies": ["feat-010"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-012",
+      "name": "Deterministic vision trigger [MEASUREMENT]",
+      "description": "MEASUREMENT. Implement the triggers from ARCHITECTURE.md — too few interactive elements, observation below a token floor, stuck detector — each logged by name so the headline percentage can be broken down by reason. Done when: a canvas-heavy page fires the trigger and a plain text page does not. 'DOM was insufficient' must be a defined condition, not a judgment call.",
+      "dependencies": ["feat-009"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-013",
+      "name": "Vision step via glm-5v-turbo",
+      "description": "On trigger, send the screenshot alongside the text observation. Done when: an episode that fails without vision succeeds with it, demonstrated from both traces.",
+      "dependencies": ["feat-001", "feat-012"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-014",
+      "name": "Set-of-marks renderer (arm B)",
+      "description": "Numbered bounding boxes drawn on a screenshot plus an id/label list. Done when: rendered marks align with real interactive elements across three sites. This is the second arm of the serialization ablation.",
+      "dependencies": ["feat-013"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-015",
+      "name": "Benchmark runner",
+      "description": "Run the subset with concurrency, per-episode wall-clock caps, resume after interruption, and full trace capture. Done when: a 10-task pilot completes, survives being interrupted and resumed mid-run, and produces traces for every episode.",
+      "dependencies": ["feat-011", "feat-004"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-016",
+      "name": "LLM judge",
+      "description": "WebVoyager judging protocol using glm-5v-turbo on the final screenshot and answer. Done when: verdicts with retained reasoning exist for the pilot run.",
+      "dependencies": ["feat-001", "feat-015"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-017",
+      "name": "Human agreement sample [CREDIBILITY]",
+      "description": "CREDIBILITY GATE. Hand-label at least 30 stratified episodes yourself, BLIND — before seeing judge verdicts. Report raw agreement and Cohen's kappa. Done when: agreement numbers are in docs/DECISIONS.md. GLM judging a GLM agent is this project's weakest point; this number is what makes the pass rate believable. Do not skip it and do not label after seeing the judge's answer.",
+      "dependencies": ["feat-016"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-018",
+      "name": "Full subset run",
+      "description": "All ~100 tasks. Record pass rate over attempted tasks AND over reachable tasks, separately, plus cost and latency per task. Done when: the results table carries both denominators with the difference explained.",
+      "dependencies": ["feat-017"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-019",
+      "name": "Failure category definitions",
+      "description": "Write the taxonomy definitions BEFORE looking at failures, separating agent failures (grounding, planning, extraction, premature-answer, loop) from non-agent failures (site-blocked, task-obsolete, infra). Done when: definitions are committed before any labeling begins.",
+      "dependencies": ["feat-015"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-020",
+      "name": "Label every failure [HEADLINE]",
+      "description": "HEADLINE RESULT. Assign one primary label per failed episode, working from traces. Done when: every failure is labeled, the distribution table exists, and the dominant agent failure mode is identified. This fills the last resume placeholder and is the part almost nobody else does.",
+      "dependencies": ["feat-018", "feat-019"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-021",
+      "name": "Labeling self-consistency",
+      "description": "Re-label a 20% sample after a break and measure self-agreement. Done when: self-agreement is recorded. If it is poor, the categories are badly defined — fix them and relabel rather than reporting a shaky distribution.",
+      "dependencies": ["feat-020"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-022",
+      "name": "Serialization ablation [HEADLINE]",
+      "description": "HEADLINE RESULT. Arm A (accessibility tree) vs arm B (set-of-marks) on the same subset: pass rate, tokens per step, latency. Done when: the results table exists. The resume names whichever wins, and the loser's number stays available for the follow-up question.",
+      "dependencies": ["feat-014", "feat-018"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-023",
+      "name": "Vision on/off ablation",
+      "description": "Same subset with the fallback disabled. Done when: the pass-rate delta is recorded alongside the trigger-rate breakdown by reason.",
+      "dependencies": ["feat-018"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-024",
+      "name": "Trace viewer",
+      "description": "Static HTML showing, per episode, the steps, screenshots, actions, tokens, and verdict. Done when: a stranger can open it and follow what the agent did and where it went wrong. This is the artifact to show in an interview.",
+      "dependencies": ["feat-018"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-025",
+      "name": "README with honest limitations",
+      "description": "Numbers, method, subset selection rule, judge agreement, failure distribution, and a limitations section covering live-site non-reproducibility. Done when: every number traces to docs/DECISIONS.md.",
+      "dependencies": ["feat-020", "feat-022", "feat-023", "feat-024"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-026",
+      "name": "Rewrite the resume bullet",
+      "description": "Replace all six bracketed placeholders in sarthak_resume.tex with measured values and delete the [BRACKETED PLACEHOLDERS] warning comment. Done when: no brackets remain and every number traces to a measurement in docs/DECISIONS.md.",
+      "dependencies": ["feat-025"],
+      "status": "not-started",
+      "evidence": ""
+    }
+  ]
+}
