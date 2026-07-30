@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== Browser Agent (WebVoyager) — session init ==="
+echo "=== Browser Agent (Online-Mind2Web) — session init ==="
 echo ""
 
 if [ ! -f package.json ]; then
@@ -49,4 +49,6 @@ echo "3. Implement only that feature"
 echo "4. Run its done-criteria check and paste real output into evidence"
 echo "5. Record any measurement in docs/DECISIONS.md before claiming done"
 echo ""
-echo "Reminder: no site-specific code, no evasion tooling, traces always on."
+echo "Reminder: no site-specific code, traces always on."
+echo "Evasion (changed 2026-07-30): headless UA masking OK; CAPTCHA solving,"
+echo "residential proxies and stealth-fingerprint suites still banned."

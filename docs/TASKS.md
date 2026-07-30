@@ -3,6 +3,18 @@
 Execution order. Each task has an acceptance check. A task is not done until
 its check passes and you have seen the output.
 
+> **Benchmark changed 2026-07-30: WebVoyager → Online-Mind2Web** (300 tasks, 136
+> sites; MIT code, CC-BY-4.0 data). G2 and G3 below were run against WebVoyager's
+> 15 sites and 643 tasks. **They are retained as findings and are not re-run** —
+> they are the evidence for the change. **Their numbers do not transfer to the
+> new set.** Reason and consequences: `docs/DECISIONS.md`.
+>
+> **Evasion rule changed the same day.** Headless masking (a user-agent override
+> dropping the `HeadlessChrome` token) is now **permitted**. CAPTCHA solving,
+> residential proxies and stealth-fingerprint suites remain **banned**. G2's
+> "no evasion tooling" instruction below reflects the rule as it stood when G2
+> ran.
+
 ---
 
 ## M0 — Gates
@@ -36,9 +48,32 @@ site still supports what the task asks.
 `docs/DECISIONS.md`. This decides the honest denominator and is itself a
 reportable result.
 
-### G4 — Task subset selection
-Select ~100 tasks stratified across all 15 sites, using G2 and G3. Write the
-selection rule down.
+### G4 — Task subset selection  *(respecified 2026-07-30)*
+Select **~100 tasks stratified across Online-Mind2Web** (300 tasks, 136 sites).
+**Not "across all 15 sites"** — that was WebVoyager-shaped, where 15 sites made
+one-per-site stratification obvious. With 136 sites and ~100 tasks, per-site
+strata are arithmetically impossible: most sites get zero, and no site gets
+enough for a per-site rate to mean anything.
+
+So G4 must **choose a stratification axis and write down why** — benchmark
+difficulty label, site domain/category, or task length are the candidates — and
+state what that choice gives up.
+
+Settled inputs, from the Stage 2 checkpoint (`docs/DECISIONS.md`):
+
+- **Blocked tasks are excluded from the scored set**, and their count and site
+  list are always published. Never a silent drop.
+- **Locale is declared configuration:** `en-US` with a fixed `timezoneId`, set in
+  the Playwright context, no proxying.
+- **Two denominators:** attempted, and reachable-and-valid, each with its own n.
+
+Two things carry over from G2/G3 even though their numbers do not:
+
+- **Probe a completed first action per site, not a `goto`.** Google Search loaded
+  fine and then refused its first query.
+- **G2's reachability covers 15 WebVoyager sites, not 136.** Scoping the new
+  audit — a sample or a full sweep — is G4's first decision, and a 136-site sweep
+  at G2's per-site cost is a materially bigger job than the 15-site one.
 
 **Check:** `tasks/subset.json` plus a written rule a reader could reproduce.
 
@@ -125,9 +160,16 @@ interruption, and full trace capture.
 traces for every episode.
 
 ### T4.2 — LLM judge
-WebVoyager protocol using `glm-4.6v` on the final screenshot and answer.
+Judging protocol using `glm-4.6v` on the final screenshot and answer.
 
 **Check:** judge verdicts recorded for the pilot, with reasoning retained.
+
+Online-Mind2Web ships its own judge, **WebJudge, with a published ~85.7% average
+agreement with human judgment**. Report T4.3's measured agreement against it —
+a number in isolation says much less. But that 85.7% is **WebJudge backed by
+o4-mini**, on their sample and their labelers; this project's judge is
+`glm-4.6v`. It is **not our expected number and must never be quoted as ours**,
+and it **does not remove the blind-labeling requirement in T4.3**.
 
 ### T4.3 — Human agreement sample  ⭐
 Hand-label ≥30 stratified episodes yourself, blind to the judge's verdict.
@@ -138,7 +180,11 @@ makes the pass rate credible.** Do not skip it, and do not label after seeing
 the judge's answer.
 
 ### T4.4 — Full subset run
-All ~100 tasks. Record pass rate over attempted and over reachable, separately.
+All ~100 tasks. Record pass rate over **attempted** and over
+**reachable-and-valid**, separately, **each with its own explicit n** —
+"37/94 attempted (39%)" and "37/81 reachable-and-valid (46%)", not two bare
+percentages. Neither may be quoted without the other, anywhere. Publish the
+blocked-task count and the sites it covers alongside them.
 
 **Check:** results table with both denominators, and cost and latency per task.
 

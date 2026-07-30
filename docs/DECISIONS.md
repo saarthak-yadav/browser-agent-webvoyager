@@ -30,7 +30,11 @@ Format:
       14 still-valid, 2 changed, 4 impossible out of 20** (of the 4 impossible,
       2 are site decay and 2 are sites blocking automation). See the
       2026-07-30 entry below.
-- [ ] Subset selection rule and final task count (feat-004)
+- [ ] Subset selection rule and final task count (feat-004) — **now against
+      Online-Mind2Web, not WebVoyager.** See the 2026-07-30 benchmark-change entry.
+- [ ] Reachability of the Online-Mind2Web site pool (**new, unowned**) — feat-002
+      measured WebVoyager's 15 sites and **those figures do not transfer to 136
+      sites.** See the 2026-07-30 flag entry.
 - [ ] Observation size distribution → token budget (feat-007)
 - [ ] Retry/replan constants and their justification (feat-010)
 - [ ] Vision trigger rate, broken down by trigger reason (feat-012)
@@ -220,6 +224,21 @@ The headless shell announces itself as `HeadlessChrome`. Any headless-only block
 below could be that string, the missing GUI surface, or both — this run does not
 separate them, and deliberately did not try, since separating them means
 spoofing the UA.
+
+> **⚠ AMENDED 2026-07-30 — the rule this paragraph applied has changed, and the
+> reasoning above is now superseded.** The run and its results are untouched;
+> only the policy is. Headless masking — a user-agent override that drops the
+> `HeadlessChrome` token — **is now permitted**, so the choice recorded above
+> ("deliberately did not try, since separating them means spoofing the UA") is
+> no longer the standing rule. It stands as an accurate record of the decision
+> taken *at the time*, under the ban `AGENTS.md` then carried.
+>
+> **Direct consequence:** the one thing this run declined to determine — whether
+> Allrecipes' headless-only 402 was the UA string, the missing GUI surface, or
+> both — is now determinable, and was not determined here. Nothing below should
+> be read as evidence either way. CAPTCHA solving, residential proxies and
+> stealth-fingerprint suites remain banned. See the 2026-07-30 evasion-policy
+> amendment entry at the end of this file.
 
 **Got:**
 
@@ -578,3 +597,341 @@ reason and changed no behaviour, as verified above.
    the locale policy raised in feat-003 conclusion 5, and which denominator rule
    the subset is built against. Guessing any of the three would bake an
    unexamined choice into the task set every later number is computed over.
+
+   *Resolved 2026-07-30 at the Stage 2 checkpoint — see the four decision entries
+   below. All three questions are now answered, and the benchmark itself changed.*
+
+---
+
+## 2026-07-30 — BENCHMARK CHANGE: WebVoyager → Online-Mind2Web
+
+**Ran:** no new measurement. This records a decision taken at the Stage 2
+checkpoint, on the evidence already in this file. External facts about the new
+set were verified against
+`https://github.com/OSU-NLP-Group/Online-Mind2Web` on 2026-07-30.
+
+**Got:** the two findings that forced the question, both already recorded above:
+
+- **feat-003:** 4 of 20 sampled WebVoyager tasks cannot be attempted as written
+  today — 2 genuine site decay (BBC discontinued its market-data feeds; Booking--20
+  hard-codes February 2024 dates), 2 sites refusing automation.
+- **feat-003:** Google Search blocks on the first real query (`/sorry/index`,
+  "unusual traffic"). That is **43 of 643 tasks**, 6.7% of the set, gone before
+  the agent does anything wrong.
+
+The replacement, verified at source: Online-Mind2Web is **300 tasks across 136
+websites** — "Online-Mind2Web includes 300 diverse tasks from 136 popular
+websites across various domains". Code is **MIT**; the dataset is **CC-BY-4.0**
+("The Online-Mind2Web dataset is licensed under a Creative Commons Attribution
+4.0 International License"). Both licenses permit use and redistribution in a
+public portfolio repo with attribution.
+
+**Concluded:** **The benchmark is now Online-Mind2Web.** The reason is precisely
+the feat-003 result: a 2024 static task set decays against live sites, and this
+project's whole argument is about honest denominators, so it should not spend its
+credibility defending a denominator it has already measured as rotten. The
+Online-Mind2Web maintainers describe the set as actively maintained against
+exactly this failure mode — task validity re-checked against the live web rather
+than frozen at publication. Choosing a set whose maintainers do the decay work is
+a cheaper and more defensible answer than re-deriving it here every few months.
+
+Consequences, all of them load-bearing:
+
+1. **The WebVoyager audits are kept as findings and are NOT re-run.** feat-002
+   (reachability, 15 sites, headless vs headed) and feat-003 (decay, 20 of 643)
+   stay `done`, stay in this file, and stay in `feature_list.json` with their
+   evidence intact. They are the *measurement that justifies the switch* — deleting
+   them would remove the reason for the decision and leave the change looking
+   arbitrary. They are now findings about a set this project no longer scores on,
+   and every later document must say so rather than quoting them as current
+   reachability.
+2. **feat-002's numbers do not transfer.** Flagged separately below.
+3. **`tasks/WebVoyager_data.jsonl`, `tasks/decay-sample.json` and
+   `tasks/decay-audit.json` stay in the repo** as the evidence behind feat-002 and
+   feat-003. The Online-Mind2Web task file is a new artifact feat-004 must fetch.
+4. **"~100 of 643" becomes "~100 of 300".** The subset is now a third of the
+   benchmark rather than a sixth, which strengthens the sampling argument and
+   changes nothing about the hand-labeling constraint that set ~100 in the first
+   place.
+5. **Rejected alternatives.** (a) Staying on WebVoyager and dropping the dead
+   tasks — keeps a denominator this project has itself measured as 20%-rotten on
+   a 20-task sample, and makes every number need a footnote. (b) Staying on
+   WebVoyager and reporting the decay as the headline — that is a benchmark-audit
+   project, not an agent-evaluation project, and it does not fill the resume
+   bullet. (c) Building a bespoke task set — unciteable, unreproducible, and
+   exactly the kind of thing an interviewer discounts.
+6. **The cost is real and should be stated, not hidden:** this discards feat-002's
+   and feat-003's *forward* value. Both were run to feed feat-004, and feat-004
+   now needs equivalent work against a 136-site pool. Their value as recorded
+   findings — and as the justification for this change — is what remains.
+
+---
+
+## 2026-07-30 — DECISION: blocked tasks are excluded from the scored set, and always published
+
+**Ran:** no measurement — a scoring-policy decision taken at the Stage 2
+checkpoint. It resolves the "is Google Search dropped or carried as a stratum"
+question left open by the harness-repair entry above, generalised past the one
+site that raised it.
+
+**Got:** n/a.
+
+**Concluded:** A task on a site that refuses automated access is **excluded from
+the scored set**, and **its count and the list of sites it was excluded for are
+published everywhere the pass rate is published** — README, results table, and
+the resume bullet's supporting detail.
+
+Both halves are the decision; neither works alone.
+
+- **Excluding is the honest half.** A site block is not the agent failing. Scoring
+  it as a failure measures Cloudflare, not the agent, and depresses a number the
+  project then has to explain away.
+- **Publishing is what stops the exclusion from being a cheat.** An unpublished
+  exclusion rule is indistinguishable from dropping the hard tasks: any pass rate
+  can be improved by quietly removing what did not work. The count and the site
+  list are what make the exclusion auditable by a reader who suspects exactly that.
+
+Rules that follow from it, so this is not re-litigated per-site:
+
+1. **A block must be evidenced, not asserted** — HTTP status, interstitial text, or
+   a screenshot, recorded per task, the same standard feat-002 held itself to.
+2. **The decision is made before the scored run, not after seeing results.** Blocks
+   discovered *mid-episode* are labeled `site-blocked` by feat-020's taxonomy and
+   reported as a non-agent failure; they do not retroactively leave the attempted
+   denominator. Excluding on evidence gathered after seeing a failure is the
+   fitting-the-categories-to-the-result problem feat-003 and T5.1 both guard against.
+3. **Never write a bare pass rate.** It is always accompanied by "N tasks excluded
+   as blocked, across sites X, Y, Z".
+4. This is the concrete mechanism behind the two-denominator rule below: excluded
+   tasks are exactly what separates *attempted* from *reachable-and-valid*.
+
+---
+
+## 2026-07-30 — DECISION: locale is en-US with a fixed timezone, declared, not proxied
+
+**Ran:** no measurement — resolves feat-003 conclusion 5, which observed Amazon
+rendering prices in INR and Google Flights defaulting its origin to the local
+city, both from IP geolocation.
+
+**Got:** n/a.
+
+**Concluded:** The browser runs with a **declared, fixed configuration: locale
+`en-US`, and a single fixed timezone**, set explicitly in the Playwright context
+(`locale`, `timezoneId`) and recorded in every trace and in the README. **No
+proxying, VPN, or IP-geolocation manipulation of any kind.**
+
+The distinction that makes this permissible and not evasion: locale and timezone
+are **standard browser configuration a real user sets**, and this project sets
+them openly and reports them. A residential proxy is a claim about *where the
+request comes from* — it misrepresents the client to the server, which is the
+line `AGENTS.md` draws and which the amendment below does not move.
+
+Consequences:
+
+1. **It does not fully solve the confound, and must not be described as if it
+   does.** IP-based geolocation will still put this client in its actual country.
+   Expect sites to serve local currency and local defaults despite an `en-US`
+   locale. The README states the locale, the timezone, and that the originating
+   region is not controlled.
+2. **Residual locale mismatch is a benchmark condition, not an agent failure**, and
+   feat-019's taxonomy needs to be able to say so. A correct answer in the wrong
+   currency is not a grounding error.
+3. **The fixed timezone matters more than it looks.** Tasks with relative dates
+   ("next Tuesday", "this weekend") resolve against it, so leaving it floating
+   would make episodes non-comparable across runs and machines.
+4. Rejected: proxying to a US IP for locale fidelity. It buys reference-answer
+   agreement at the cost of the one claim this project cannot afford to weaken —
+   that it does not misrepresent itself to the sites it measures.
+
+---
+
+## 2026-07-30 — DECISION: two denominators, reported separately, each with its n
+
+**Ran:** no measurement — fixes the reporting contract before any number exists
+to be embarrassed by, resolving the third open feat-004 input.
+
+**Got:** n/a.
+
+**Concluded:** Every pass rate this project publishes is reported **twice, side by
+side, never one alone**:
+
+- **Pass rate over attempted** — every task the agent was actually launched on.
+  This is the conservative number and the one a skeptical reader should reach for.
+- **Pass rate over reachable-and-valid** — attempted, minus tasks excluded as
+  blocked (above) and minus tasks found invalid on inspection. This is the number
+  that describes the agent rather than the environment.
+
+**Each carries its own explicit n**, written next to it — "37/94 attempted (39%)"
+and "37/81 reachable-and-valid (46%)", not two bare percentages. The gap between
+them is itself a result and must be explained in one sentence wherever it appears.
+
+Rules:
+
+1. **Neither may be quoted without the other**, in the README, the resume bullet,
+   or an interview answer. A single number invites the question "over what?" and
+   the answer needs to already be on the page.
+2. **The reachable-and-valid denominator is derived from criteria fixed before the
+   run** — the block rule above, and feat-004's validity criteria. It is not a
+   post-hoc filter of tasks the agent happened to fail.
+3. **The resume bullet names the attempted rate** if only one fits, because the
+   more conservative number is the one that survives being checked.
+4. This makes concrete what `AGENTS.md`'s "separate agent failures from benchmark
+   failures" invariant has demanded from the start, and what feat-018 must produce.
+
+---
+
+## 2026-07-30 — POLICY AMENDMENT: headless masking is now permitted. THE RULE CHANGED.
+
+**Ran:** no measurement. This is a deliberate reversal of a standing project rule,
+recorded as a reversal rather than a reword.
+
+**Got:** n/a.
+
+**Concluded:** **Headless masking is permitted.** Specifically: overriding the
+user agent so the browser does not announce the `HeadlessChrome` token. That is
+the entire permission — nothing else about the browser is altered.
+
+**Still banned, and this amendment does not soften them:**
+
+- **CAPTCHA solving** — manual, automated, or third-party solving services.
+- **Residential and rotating proxies**, and any IP-geolocation manipulation.
+- **Stealth-fingerprint suites** — `puppeteer-extra-plugin-stealth` and
+  equivalents: WebGL/canvas/audio spoofing, `navigator.webdriver` patching, plugin
+  and font forgery.
+
+**What this reverses, explicitly:**
+
+1. **`AGENTS.md`** previously read *"Do not build bot-detection evasion. No stealth
+   plugins, no fingerprint spoofing, no CAPTCHA solving."* — an unqualified ban
+   that caught the UA string along with everything else. It has been rewritten in
+   place with the change called out, not quietly reworded.
+2. **The feat-002 entry above, at its "No evasion, per AGENTS.md" paragraph.**
+   That run recorded that it *"does not separate them, and deliberately did not
+   try, since separating them means spoofing the UA"* — the two causes being the
+   `HeadlessChrome` string and the missing GUI surface. **That deliberate
+   non-separation was correct under the old rule and is now simply an
+   unmeasured gap.** An amendment banner sits on that paragraph pointing here.
+   The paragraph's text is unchanged: this log is append-only and records what
+   was actually done at the time.
+
+**The honest reading of the reversal:** the old rule conflated two different
+things under one word. Solving a CAPTCHA, buying residential IPs, or forging a
+fingerprint are attempts to *look like a different client than you are* — an arms
+race, and the thing worth refusing. The `HeadlessChrome` token is a self-report
+that the same browser engine, in a mode a normal user could run, volunteers about
+itself. Suppressing it is closer to a run-configuration choice — the same class as
+feat-002 conclusion 2, which already chose headed over headless because Allrecipes
+402s the headless UA. **The strongest argument against the change is that this is
+a slippery slope, and the mitigation is that the ban list above is explicit and
+exhaustive rather than left to judgement.**
+
+Consequences to carry forward:
+
+1. **The README may no longer say "no evasion tooling is used".** It must state
+   what was masked: the user agent is overridden to drop the `HeadlessChrome`
+   token, and nothing else is spoofed. `README.md` has been corrected now rather
+   than at feat-025, because it currently carries the false claim. Flagged in
+   feat-025's description too.
+2. **A headless-vs-headed block can now be attributed.** The Allrecipes question
+   feat-002 left open — UA string, missing GUI surface, or both — is answerable
+   with a UA override. **Not measured this session, and it must not be assumed:**
+   whoever runs it records it as a new measurement here.
+3. **This may reopen the headed-vs-headless run decision.** feat-002 conclusion 2
+   chose headed because of Allrecipes' headless 402, and headed costs wall-clock
+   and needs a GUI session, which constrains feat-015's concurrency. If masking
+   alone clears that class of block, headless becomes viable again and the
+   benchmark run gets cheaper. **Do not act on this without measuring it** — and
+   note it would be measured against the Online-Mind2Web site pool now, not
+   Allrecipes.
+4. **Whatever is masked is recorded in every trace and stated in the README.** The
+   claim being made is not "we did not evade" — it is "here is exactly what we
+   sent, judge it yourself."
+
+---
+
+## 2026-07-30 — feat-004 and feat-016 respecified against Online-Mind2Web
+
+**Ran:** no measurement — spec changes following from the benchmark change above.
+
+**Got:** n/a.
+
+**Concluded:**
+
+**feat-004 — "~100 tasks stratified across all 15 sites" is now "~100 tasks
+stratified across Online-Mind2Web".** The old phrasing was WebVoyager-shaped: 15
+sites made one-task-per-site stratification both possible and obvious. With **136
+sites and ~100 tasks, per-site strata are arithmetically impossible** — most sites
+would get zero and no site would get enough for a per-site rate to mean anything.
+feat-004 must therefore **choose and write down what it stratifies on** (task
+difficulty as labeled by the benchmark, site domain/category, or task length are
+the candidates), state why that axis, and state what it consciously gives up.
+The "written selection rule a reader could reproduce" requirement is unchanged and
+matters more now, not less. Updated in `feature_list.json` and `docs/TASKS.md` G4.
+
+**feat-016 — WebJudge's published agreement is a comparison point, and it does not
+remove the blind-labeling requirement.** Online-Mind2Web ships its own LLM judge,
+WebJudge, with a published **~85.7% average agreement with human judgment**. Noted
+in feat-016 so feat-017's result has something external to be read against —
+"our judge agrees with a human X% of the time" is far more informative next to a
+published figure than in isolation.
+
+Three caveats that must travel with that number, or it will be misused:
+
+1. **85.7% is WebJudge backed by o4-mini**, per the source ("WebJudge powered by
+   GPT-4o and o4-mini consistently achieves the highest agreement, with averages
+   of 83.6% and 85.7%, respectively"; a fine-tuned WebJudge-7B reaches 87%). **This
+   project's judge is `glm-4.6v` running the judging protocol on the final
+   screenshot and answer.** Different backbone, and — if the protocol differs at
+   all — a different procedure. 85.7% is **not** this project's expected number and
+   must never be quoted as if it were ours.
+2. **It is measured on their labeled sample, not ours.** Agreement rates are not
+   portable across task sets or human labelers.
+3. **feat-017 is unchanged and still mandatory.** Blind hand-labeling of ≥30
+   stratified episodes *before* seeing judge verdicts, reporting raw agreement and
+   Cohen's kappa. A published third-party number about a different judge is not
+   evidence about ours — if anything it raises the bar, since a materially lower
+   agreement is now a visible result rather than an unknown. `AGENTS.md`'s
+   "the judge does not grade itself unchecked" invariant is untouched.
+
+---
+
+## 2026-07-30 — FLAG, not acted on: feat-002's reachability does not transfer to 136 sites
+
+**Ran:** nothing. This is a flag raised at the Stage 2 checkpoint so it is not
+discovered later by assumption.
+
+**Got:** n/a.
+
+**Concluded:** **feat-002 measured 15 WebVoyager sites. Online-Mind2Web has 136.
+None of feat-002's rates carry over, and quoting them against the new set would be
+inventing a number.**
+
+Concretely, these figures are now **about a set this project no longer scores on**:
+
+- "headless 13/15 reachable, headed 14/15"
+- "2 of 15 sites confirmed blocked" (Cambridge Dictionary, Google Search)
+- "86 of 643 tasks on blocked sites"
+
+They remain valid as recorded measurements of WebVoyager, and they are the
+evidence for the benchmark change. They are **not** an estimate of the new pool.
+Why they cannot be extrapolated:
+
+1. **Different, mostly disjoint site list.** 136 sites drawn for coverage across
+   domains overlap WebVoyager's 15 only partly. A rate over 15 hand-picked sites
+   says nothing reliable about 136 different ones.
+2. **The base rate is unknown in both directions.** A broader pool includes both
+   softer targets and more aggressive ones; there is no reason to assume 2/15
+   generalises, up or down.
+3. **The masking change moves the number too.** Blocks are now measured under a
+   policy that permits a UA override, so even the *same* sites could classify
+   differently than feat-002 recorded.
+4. **The first-action lesson still holds and is the more transferable finding.**
+   Google Search loaded fine and refused the first query. Whatever measures the
+   new pool must probe a **completed action**, not a `goto`. That methodological
+   point transfers; the numbers do not.
+
+**Not acted on this session, by instruction.** Reachability of the Online-Mind2Web
+pool is now an owed measurement with no owner — added to the list at the top of
+this file. feat-004 needs at least a partial answer, and a 136-site full audit at
+feat-002's per-site cost is a materially larger job than the 15-site one; scoping
+it (sample vs full sweep) is the first thing feat-004 has to decide.

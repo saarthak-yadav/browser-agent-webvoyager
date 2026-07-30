@@ -2,8 +2,17 @@
 
 ## Goal
 
-An autonomous web agent evaluated honestly on the WebVoyager benchmark, with
-every claim in the resume bullet backed by a measurement.
+An autonomous web agent evaluated honestly on the **Online-Mind2Web** benchmark
+— 300 tasks over 136 live websites
+([OSU-NLP-Group/Online-Mind2Web](https://github.com/OSU-NLP-Group/Online-Mind2Web),
+MIT code, CC-BY-4.0 data) — with every claim in the resume bullet backed by a
+measurement.
+
+*Changed 2026-07-30, from WebVoyager (643 tasks, 15 sites). feat-003 found 4 of
+20 sampled WebVoyager tasks unattemptable and Google Search blocking 43 tasks;
+Online-Mind2Web is actively maintained against exactly that decay. The
+WebVoyager audits (feat-002, feat-003) are retained as findings about the old
+set — not deleted, not re-run. See `docs/DECISIONS.md`.*
 
 This is an **evaluation project wearing an agent costume**. The agent is the
 easy half; the measurement discipline is the differentiator. Plenty of people
@@ -18,8 +27,10 @@ stratified benchmark run, a hand-labeled failure taxonomy, an episode trace
 viewer.
 
 **Out of scope:** beating published state of the art, a UI beyond the trace
-viewer, site-specific handling of any kind, bot-detection evasion, training or
-fine-tuning anything, running the full 643-task set.
+viewer, site-specific handling of any kind, bot-detection evasion beyond the
+headless user-agent masking permitted by `AGENTS.md` (CAPTCHA solving,
+residential proxies and stealth-fingerprint suites stay banned), training or
+fine-tuning anything, running the full 300-task set.
 
 ## Milestones
 
@@ -45,22 +56,37 @@ Answer these in an afternoon, before writing the agent:
    `glm-4.6v` is and passed the gate. The plan now names `glm-4.6v`.*
 2. **Can headless Playwright reach the benchmark sites?** Test ~5 of the 15.
    Expect resistance from the commerce and travel sites. If a site blocks,
-   record it — do not build evasion.
+   record it — evasion is limited to headless UA masking (`AGENTS.md`).
+   *Answered 2026-07-30 against WebVoyager's 15 sites: 2 confirmed blocked. **These
+   figures do not transfer to Online-Mind2Web's 136 sites** — see the flag in
+   `docs/DECISIONS.md`.*
 3. **How much of the 2024 task set still works in 2026?** Sample ~20 tasks and
    check whether the site still supports what the task asks. This number
    determines whether the honest denominator is "attempted" or "reachable", and
-   it is itself a reportable finding.
+   it is itself a reportable finding. *Answered 2026-07-30: 14 valid / 2 changed
+   / 4 impossible of 20 WebVoyager tasks — the finding that motivated the move
+   to Online-Mind2Web. Retained; not re-run.*
 
 ## Decisions taken up front
 
 - **TypeScript + Playwright.** Same language as project 1, and it builds on real
   production experience (Puppeteer, headless Chrome lifecycle, concurrent
   sessions at Adora) rather than starting from nothing.
-- **~100 tasks, stratified across all 15 sites.** Enough for a defensible pass
-  rate; small enough that every failure can be hand-labeled, which is the point.
+- **~100 tasks, stratified across Online-Mind2Web** (300 tasks, 136 sites) — not
+  "across all 15 sites"; that phrasing belonged to WebVoyager. Enough for a
+  defensible pass rate; small enough that every failure can be hand-labeled,
+  which is the point. With 136 sites and ~100 tasks the stratification axis
+  cannot be one-per-site, so feat-004 must state what it stratifies on and why.
   The README states the subset and the selection method plainly.
 - **Both serialization arms get built**, and the resume names the winner.
-- **Judge agreement is measured, not assumed.**
+- **Judge agreement is measured, not assumed.** Online-Mind2Web's own WebJudge
+  reports ~85.7% agreement with human labels; that is a comparison point for
+  feat-017, not a substitute for it.
+- **Blocked tasks are excluded from the scored set, and their count and site
+  list are always published.** Never a silent drop.
+- **Locale is declared configuration: en-US with a fixed timezone, no proxying.**
+- **Two denominators, always: pass rate over attempted and over
+  reachable-and-valid, each reported with its own n.**
 - **Public repo, honest history, no backdating.**
 
 ## Risks

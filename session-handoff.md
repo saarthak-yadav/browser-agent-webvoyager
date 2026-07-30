@@ -1,21 +1,48 @@
 # Session Handoff
 
+## ⚠ Two rules changed on 2026-07-30. Do not work from memory.
+
+1. **The benchmark is Online-Mind2Web** (300 tasks, 136 sites,
+   `github.com/OSU-NLP-Group/Online-Mind2Web`, MIT code / CC-BY-4.0 data), **not
+   WebVoyager**. feat-002 and feat-003 are **retained as findings, not deleted and
+   not re-run** — they are the evidence for the change — and **their numbers do
+   not transfer to 136 sites.**
+2. **Headless masking is permitted**: a user-agent override dropping the
+   `HeadlessChrome` token, and nothing else. **CAPTCHA solving, residential or
+   rotating proxies, and stealth-fingerprint suites remain banned.** This reverses
+   the old unqualified evasion ban in `AGENTS.md` and supersedes the reasoning in
+   the feat-002 DECISIONS entry, which now carries an amendment banner. **The
+   README may not say "no evasion tooling"** — it states what was masked.
+
+Both are recorded in the seven 2026-07-30 checkpoint entries at the end of
+`docs/DECISIONS.md`.
+
 ## Current Objective
 
-- **Goal:** An autonomous web agent evaluated honestly on ~100 WebVoyager tasks,
-  with every resume claim backed by a measurement.
-- **Current status:** feat-001, feat-002 and feat-003 all **done**. All three
-  pre-agent gates are answered: vision works on `glm-4.6v`, 2 of 15 sites block
-  automated access, and 4 of 20 sampled tasks cannot be attempted as written.
-  The harness now typechecks and has real tests. **feat-004 is not started on
-  purpose** — it needs a human decision first (see Blockers).
-- **Branch / commit:** `main`, at `Update progress and handoff after feat-002 and
-  feat-003`, plus uncommitted harness-repair work.
+- **Goal:** An autonomous web agent evaluated honestly on ~100 Online-Mind2Web
+  tasks, with every resume claim backed by a measurement.
+- **Current status:** feat-001, feat-002 and feat-003 all **done**. The Stage 2
+  checkpoint is **recorded** — benchmark changed, three scoring decisions taken,
+  evasion policy amended, feat-004 and feat-016 respecified. The harness
+  typechecks and has real tests. **feat-004 is not started on purpose** — the
+  checkpoint that blocked it is now closed, so it is the next thing to start.
+- **Branch / commit:** `main`, at `Stage 2 checkpoint: benchmark moves to
+  Online-Mind2Web, evasion rule narrowed` — docs only, no code. Working tree
+  clean. **Not pushed.**
 
 ## Completed This Session
 
-- [x] feat-002 — site reachability across all 15 sites, headless and headed
-- [x] feat-003 — task decay audit, 20 tasks sampled with a fixed seed
+- [x] **Stage 2 checkpoint recorded — documentation only, no code.** Benchmark
+      changed to Online-Mind2Web; blocked-task, locale and denominator decisions
+      taken; evasion policy amended; feat-004 and feat-016 respecified; the
+      feat-002-does-not-transfer flag raised and deliberately **not** acted on.
+
+### Earlier sessions
+
+- [x] feat-002 — site reachability across all 15 **WebVoyager** sites, headless
+      and headed. Retained as a finding about a set no longer scored on.
+- [x] feat-003 — task decay audit, 20 tasks sampled with a fixed seed. The
+      measurement that caused the benchmark change.
 - [x] Project now has a real Bun project: `package.json`, Playwright installed
 - [x] **Harness repair (not a feature).** `typecheck` did not exist and
       `typescript` was never installed, so all four scripts were unchecked;
@@ -56,10 +83,16 @@
 
 ## Decisions Made
 
+*The five Stage 2 checkpoint decisions — benchmark change, blocked-task handling,
+locale, denominators, evasion — are written up in full in `progress.md` under
+"Stage 2 checkpoint, 2026-07-30" and in `docs/DECISIONS.md`. Summarised at the top
+of this file.*
+
 - **Run the benchmark headed, not headless.** Allrecipes returns 402 headless
   and 200 headed. This is a run-configuration choice, not evasion — stock
   browser, normal mode. It constrains feat-014's concurrency, which now needs a
-  GUI session.
+  GUI session. **Possibly reopened by the 2026-07-30 masking change** — if the UA
+  token was the cause, headless may be viable again. Unmeasured.
 - **Audited all 15 sites rather than the ~5 the task asked for.** Cheap, and
   feat-004 needs the full picture to stratify.
 - **Decay categories were fixed before any site was opened**, the same
@@ -76,22 +109,36 @@
 ## Blockers / Risks
 
 - ~~Vision model unverified~~ — resolved, `glm-4.6v`.
-- ~~Sites may block~~ — **measured. 2 of 15 confirmed blocked**: Cambridge
-  Dictionary (Cloudflare 403 on load) and Google Search (loads, then refuses the
-  first query). That is 86 of 643 tasks. No evasion built, per AGENTS.md.
-- ~~Task set may have decayed~~ — **measured. 4 of 20 impossible, 2 changed.**
-  Report as "4 of 20 sampled"; the 95% CI on 4/20 is roughly 6–44%.
+- ~~Sites may block~~ — **measured for WebVoyager: 2 of 15 confirmed blocked**
+  (Cambridge Dictionary, Cloudflare 403 on load; Google Search, loads then refuses
+  the first query) — 86 of 643 tasks. **These figures are about 15 sites and do
+  not transfer to the 136 we now score on.** See the new blocker below.
+- ~~Task set may have decayed~~ — **measured, and acted on. 4 of 20 impossible,
+  2 changed.** Report as "4 of 20 sampled"; the 95% CI on 4/20 is roughly 6–44%.
+  This is why the benchmark changed. Decay of the *new* set is unmeasured.
 - [ ] **Blocks that only appear deeper in an episode.** Google Search proved the
   first-action block exists. Others may surface only mid-task. feat-020's
   taxonomy needs a non-agent "site blocked mid-episode" category.
-- [ ] **feat-004 needs a human checkpoint before it can start.** Three inputs are
-  undecided, and each is baked into every number computed over the subset:
-  (a) is Google Search **dropped** or carried as a **known-blocked stratum**
-  (43 of 643 tasks), (b) the **locale policy**, (c) the **denominator rule** for
-  attempted vs reachable-and-valid. Do not guess these to make progress.
-- [ ] **Locale drift.** Amazon rendered INR prices, Google Flights defaulted its
-  origin to the local city — IP geolocation. WebVoyager's 2024 reference answers
-  assume a US locale. Undecided; part of the checkpoint above.
+- ~~feat-004 needs a human checkpoint before it can start~~ — **closed 2026-07-30.**
+  All three inputs decided: blocked tasks are **excluded from the scored set with
+  their count and site list always published**; locale is a **declared `en-US` +
+  fixed timezone, no proxying**; pass rate is reported **over attempted and over
+  reachable-and-valid, separately, each with its n**. The Google Search question
+  dissolved with the benchmark change.
+- [ ] **Locale drift is decided but not solved.** The `en-US` + fixed-timezone
+  config does not control the originating IP region, so sites will still serve
+  local currency and local defaults. That residual is a **benchmark condition,
+  not an agent failure**, and feat-019's taxonomy must be able to say so. Stated
+  in the README, not engineered around.
+- [ ] **NEW, unowned: reachability of the Online-Mind2Web site pool.** feat-002
+  measured 15 sites; the new set has 136 and **none of its rates carry over**.
+  feat-004's first decision is how to scope that audit — sample or full sweep —
+  because a 136-site sweep at feat-002's per-site cost is a much bigger job.
+- [ ] **NEW, unmeasured, do not assume: what headless masking actually buys.**
+  Now that a UA override is permitted, the Allrecipes question feat-002 left open
+  (UA string vs missing GUI surface) is answerable, and it may reopen the
+  headed-vs-headless run decision — headless would make the benchmark run
+  materially cheaper. **Nobody has measured it.**
 - [ ] **Error-recovery paths are the untested ones.** The single real bug
   typecheck found was in `check-reachability.ts`'s browser-relaunch path, which
   no run had executed because neither mode hit a browser-level failure. feat-015
@@ -101,28 +148,31 @@
 
 ## Next Session Startup
 
-1. Read `AGENTS.md`.
+1. Read `AGENTS.md` — **the "What this project is" and evasion sections both
+   changed on 2026-07-30.**
 2. Read `feature_list.json` and `progress.md`.
-3. Review this handoff.
+3. Review this handoff, especially the two changed rules at the top.
 4. Run `./init.sh` — expect a clean typecheck and `29 pass`.
-5. **Get the three feat-004 inputs decided by a human** (Google Search's
-   treatment, the locale policy, the denominator rule). Only then start feat-004.
+5. Start **feat-004**. Its inputs are settled; nothing is waiting on a human.
 
 ## Recommended Next Step
 
-feat-004 — select ~100 tasks stratified across the sites, and write the
-selection rule down. **Its dependencies are closed but its inputs are not:**
-settle the three questions in Blockers first. Three things from this session must
-go into it:
+feat-004 — select ~100 tasks stratified across **Online-Mind2Web**, and write the
+selection rule down. Its dependencies are closed and its inputs are now decided.
+Four things must go into it:
 
-1. **Probe a first action, not just a page load.** "13/15 reachable" is
-   landing-page only; Google Search passes that and then blocks the query.
-   Whatever number feat-004 uses must mean a completed action.
-2. **Decide what to do with the two blocked sites.** Either drop Cambridge
-   Dictionary and Google Search from the subset, or carry them as a
-   known-blocked stratum and report them in the denominator. Do not quietly
-   drop them — "2 of 15 sites blocked us" is a result worth reporting.
-3. **Set the locale policy** before any task is selected.
+1. **Fetch the Online-Mind2Web task set** (300 tasks, 136 sites) as a new
+   artifact. `tasks/WebVoyager_data.jsonl` stays in the repo as feat-002/003
+   evidence; it is no longer the working set.
+2. **Choose and justify a stratification axis.** "One per site" is arithmetically
+   impossible over 136 sites with ~100 tasks. Say what the axis is, why, and what
+   it gives up.
+3. **Scope a new reachability audit, and probe a completed first action** — not a
+   `goto`. Google Search passed a page-load probe and then blocked the query.
+   feat-002's numbers do not transfer; sample-vs-full-sweep is your call to make
+   and to write down.
+4. **Apply the settled rules:** blocked tasks excluded but counted in public,
+   `en-US` + fixed timezone with no proxying, both denominators each with its n.
 
 Settled at the end of this session, so it does not come back as a question:
 `.cursor/rules/use-bun-instead-of-node-vite-npm-pnpm.mdc` arrived in commit

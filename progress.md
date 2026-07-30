@@ -2,10 +2,31 @@
 
 ## Current State
 
-**Last Updated:** 2026-07-30
+**Last Updated:** 2026-07-30 (Stage 2 checkpoint recorded — no code written)
 **Active Feature:** none — feat-001, feat-002 and feat-003 are **done**
-**Next Feature:** feat-004 (task subset selection) — both its dependencies
-(feat-002, feat-003) are now closed
+**Next Feature:** feat-004 (task subset selection), **respecified against
+Online-Mind2Web**. Its three blocking inputs are now decided.
+
+## ⚠ Read this first: the benchmark changed on 2026-07-30
+
+**WebVoyager (643 tasks, 15 sites) → Online-Mind2Web (300 tasks, 136 sites)**,
+`github.com/OSU-NLP-Group/Online-Mind2Web`, MIT code / CC-BY-4.0 data.
+
+Why: feat-003 found 4 of 20 sampled WebVoyager tasks unattemptable in 2026, and
+Google Search blocks the queries behind 43 tasks. Online-Mind2Web is maintained
+against exactly that decay.
+
+**feat-002 and feat-003 are kept as findings — not deleted, not re-run.** They
+are the evidence for the change. **Their numbers do not transfer to 136 sites**:
+never quote "13/15 reachable", "2 of 15 blocked" or "86 of 643 tasks" as current.
+
+**The evasion rule also changed.** Headless masking (a UA override dropping the
+`HeadlessChrome` token) is now **permitted**. CAPTCHA solving, residential
+proxies and stealth-fingerprint suites stay **banned**. The README must state
+what was masked and may not claim "no evasion tooling".
+
+Full reasoning: the seven 2026-07-30 checkpoint entries at the end of
+`docs/DECISIONS.md`.
 
 ## Status
 
@@ -46,6 +67,12 @@
       files. **No measurement changed** — verified by re-running all three, see
       the 2026-07-30 harness-repair entry in `docs/DECISIONS.md`.
 
+- [x] **Stage 2 checkpoint recorded (2026-07-30, no code).** Benchmark changed to
+      Online-Mind2Web; three scoring decisions taken; evasion policy amended;
+      feat-004 and feat-016 respecified; one flag raised and deliberately not
+      acted on. Seven entries appended to `docs/DECISIONS.md`, plus an amendment
+      banner on the feat-002 evasion paragraph.
+
 ### What's In Progress
 
 - Nothing. feat-001, feat-002 and feat-003 are closed. feat-004 is **not
@@ -53,21 +80,23 @@
 
 ### What's Next
 
-1. **feat-004 — task subset selection. Blocked on a human checkpoint, not on
-   code.** Three inputs must be decided by a person first, because each one is
-   baked into every number computed over the subset afterwards:
-   - whether Google Search is **dropped** or carried as a **known-blocked
-     stratum** (43 of 643 tasks ride on this);
-   - the **locale policy** (feat-003 conclusion 5);
-   - the **denominator rule** — what counts as attempted vs reachable-and-valid.
+1. **feat-004 — task subset selection, respecified.** Its three blocking inputs
+   are now **decided** (see Decisions Made below): blocked tasks excluded but
+   always counted in public; locale declared `en-US` + fixed timezone, no
+   proxying; both denominators reported, each with its n.
 
-   Two constraints came out of feat-002/003 and must shape it:
-   - **Landing-page reachability is not usability.** Google Search's homepage
-     loads but the first query returns the unusual-traffic page. feat-004 needs
-     a *first-action* probe per site, not a `goto`.
-   - **Locale drift is a live confound.** Amazon rendered prices in INR and
-     Google Flights defaulted its origin to the local city, both from IP
-     geolocation. WebVoyager's 2024 reference answers assume a US locale.
+   What it must now do, which is **not** what its old spec said:
+   - **~100 tasks stratified across Online-Mind2Web**, not "across all 15 sites".
+     136 sites and ~100 tasks makes per-site strata arithmetically impossible, so
+     feat-004 must **pick a stratification axis, write down why, and say what it
+     gives up**. Candidates: benchmark difficulty label, site domain/category,
+     task length.
+   - **Scope a fresh reachability audit.** feat-002's 15-site figures do not
+     transfer to 136. Sample or full sweep is feat-004's first decision, and a
+     136-site sweep at feat-002's per-site cost is a materially bigger job.
+   - **Probe a completed first action per site, not a `goto`.** This is the one
+     finding that does transfer: Google Search loaded and then refused its first
+     query.
 
 Still no agent code until feat-004 fixes the subset.
 
@@ -84,20 +113,26 @@ Still no agent code until feat-004 fixes the subset.
       - Note for anyone repeating this: `image_url.url` takes a **bare base64
         string**, not a `data:` URI, and a `1210` "image format/parse error" was
         our own malformed PNG, not a plan restriction.
-- [x] **Sites blocking automated browsers — measured, and it is real.**
-      **2 of 15 sites are confirmed blocked** without evasion tooling: Cambridge
-      Dictionary (Cloudflare 403 on load, both modes) and Google Search (loads,
-      then refuses the first query with `/sorry/index`). Together that is 86 of
-      643 tasks. The block was *not* on the commerce and travel sites as
-      expected — Amazon and Booking both loaded fine. Reported as a rate, no
-      evasion built. Remaining risk: blocks that only appear deeper in an
-      episode; feat-020's taxonomy needs a non-agent "site blocked mid-episode"
-      category.
-- [x] **Benchmark tasks are stale, and now quantified.** 4 of 20 sampled tasks
-      cannot be attempted as written (2 decay, 2 blocks) and 2 more have drifted
-      but stay answerable. Report as "4 of 20 sampled" — 20 tasks gives 4/20 a
-      95% CI of roughly 6-44%, which does not support "20% of WebVoyager has
-      decayed".
+- [ ] **Sites blocking automated browsers — measured for WebVoyager, UNMEASURED
+      for the set we now score on.** feat-002/003 confirmed **2 of 15 WebVoyager
+      sites blocked** (Cambridge Dictionary, Cloudflare 403 on load both modes;
+      Google Search, loads then refuses the first query with `/sorry/index`) —
+      86 of 643 tasks. The block was *not* on the commerce and travel sites as
+      expected; Amazon and Booking loaded fine. **Those figures describe 15 sites
+      and do not transfer to Online-Mind2Web's 136.** Reachability of the new
+      pool is an owed measurement with no owner; feat-004 must scope it. Two
+      other reasons the old numbers cannot be reused: headless UA masking is now
+      permitted, which can change classifications on the same sites, and
+      landing-page load was never usability in the first place. Remaining risk
+      unchanged: blocks that only appear deeper in an episode — feat-020's
+      taxonomy needs a non-agent "site blocked mid-episode" category.
+- [x] **Benchmark tasks are stale, and now quantified — and acted on.** 4 of 20
+      sampled WebVoyager tasks cannot be attempted as written (2 decay, 2 blocks)
+      and 2 more have drifted but stay answerable. Report as "4 of 20 sampled" —
+      20 tasks gives 4/20 a 95% CI of roughly 6-44%, which does not support "20%
+      of WebVoyager has decayed". **This is the finding that moved the project to
+      Online-Mind2Web** (2026-07-30). Decay of the *new* set is not measured and
+      must not be assumed to be zero.
 - [ ] **Time-relative tasks are not reproducible across runs.** "Most recent
       papers", "trending this month" were counted still-valid because they are
       answerable, but their ground truth moves between runs. A README
@@ -112,15 +147,70 @@ Still no agent code until feat-004 fixes the subset.
 
 ## Decisions Made
 
+### Stage 2 checkpoint, 2026-07-30
+
+- **Benchmark: Online-Mind2Web**, replacing WebVoyager. 300 tasks, 136 sites,
+  MIT code / CC-BY-4.0 data.
+  - Context: feat-003 measured the old set as decaying — 4 of 20 unattemptable,
+    43 tasks lost to a Google Search block. This project's whole argument is
+    honest denominators; it should not defend one it has measured as rotten.
+  - **feat-002 and feat-003 are retained as findings and not re-run.** Deleting
+    them would remove the reason for the change.
+  - Rejected: staying on WebVoyager and dropping dead tasks (every number needs a
+    footnote); making the decay itself the headline (that is a benchmark-audit
+    project, not this one); a bespoke task set (unciteable).
+  - Cost, stated plainly: feat-002 and feat-003 lose their *forward* value —
+    feat-004 needs equivalent work against 136 sites.
+- **Blocked tasks are excluded from the scored set, and their count and site list
+  are always published.** Both halves are the decision. Excluding is honest (a
+  bot wall is not the agent failing); publishing is what stops it being a cheat,
+  since an unpublished exclusion rule is indistinguishable from dropping the hard
+  tasks. Blocks must be evidenced, and decided before the run, not after seeing
+  results.
+- **Locale is declared configuration: `en-US` with a fixed `timezoneId`, no
+  proxying.** Set explicitly in the Playwright context and reported. It does
+  **not** fully solve the confound — IP geolocation still places the client in
+  its real country, so expect local currency anyway; that residual is a benchmark
+  condition, not an agent failure. Rejected: proxying to a US IP, which buys
+  reference-answer fidelity at the cost of misrepresenting the client.
+- **Two denominators, always, each with its own n.** Pass rate over *attempted*
+  and over *reachable-and-valid*, written as "37/94 attempted (39%)" style, never
+  as two bare percentages, and never one without the other. The resume names the
+  attempted rate if only one fits, because the conservative number survives being
+  checked.
+- **Evasion policy amended — THE RULE CHANGED.** Headless masking (UA override
+  dropping the `HeadlessChrome` token) is **permitted**; **CAPTCHA solving,
+  residential/rotating proxies and stealth-fingerprint suites stay banned**.
+  - Context: the old unqualified ban conflated "look like a different client than
+    you are" (an arms race, worth refusing) with a self-report the same engine
+    volunteers about itself.
+  - Reverses `AGENTS.md`'s old evasion invariant and contradicts what the feat-002
+    entry recorded — that entry now carries an amendment banner.
+  - **Consequences not yet measured:** whether Allrecipes' headless-only 402 was
+    the UA string or the missing GUI surface is now answerable and was **not**
+    answered; and this may reopen the headed-vs-headless run choice, which would
+    make the benchmark run cheaper. Measure, do not assume.
+  - **The README may no longer claim "no evasion tooling is used."** It now
+    states what is masked. Corrected immediately rather than at feat-025.
+- **feat-016 gains a comparison point, not a shortcut.** Online-Mind2Web's
+  WebJudge publishes ~85.7% human agreement — but that is o4-mini-backed, on
+  their sample; our judge is `glm-4.6v`. It is not our expected number, and
+  **feat-017's blind labeling is unchanged and still mandatory.**
+
+### Earlier
+
 - **TypeScript + Playwright**, over Python.
   - Context: same language as project 1, and it builds on real production
     experience (Puppeteer, headless Chrome lifecycle, concurrent sessions at
     Adora) rather than starting cold.
   - Alternative considered: Python + Playwright, which has more WebVoyager
     reference code but a weaker link to shipped work.
-- **~100 tasks stratified across all 15 sites**, not the full 643.
-  - Context: every failure gets hand-labeled, and that does not scale to 643.
-    The failure taxonomy is the differentiator, so the subset protects it.
+- ~~**~100 tasks stratified across all 15 sites**, not the full 643.~~
+  **Superseded 2026-07-30 → ~100 tasks stratified across Online-Mind2Web (300
+  tasks, 136 sites); the stratification axis is feat-004's to choose and justify.**
+  - Context, unchanged: every failure gets hand-labeled, and that does not scale
+    to the full set. The failure taxonomy is the differentiator, so the subset
+    protects it.
   - The README states the subset and selection rule plainly.
 - **Both serialization arms get built**; the resume names the measured winner.
 - **Vision and judging run on `glm-4.6v`**, not `glm-5v-turbo`.
@@ -203,15 +293,42 @@ Still no agent code until feat-004 fixes the subset.
       `60e3325ae8bce55f7ecd11f7ca88bb80`, three re-probed sites reproducing
       their recorded verdicts and counts exactly, and the feat-001 gate at 4/4.
 
+## Files Modified At The Stage 2 Checkpoint (2026-07-30, docs only)
+
+- `docs/DECISIONS.md` — seven new entries (benchmark change; three scoring
+  decisions; evasion amendment; feat-004/feat-016 respec; the non-transfer flag),
+  plus an amendment banner on the feat-002 "No evasion, per AGENTS.md" paragraph
+  and two new owed measurements.
+- `AGENTS.md` — benchmark, evasion policy rewritten with the change called out,
+  scope boundary.
+- `docs/PLAN.md` — goal, scope, gates, decisions-up-front.
+- `docs/TASKS.md` — header banner, G4 respecified, T4.2 and T4.4.
+- `docs/ARCHITECTURE.md` — judging note, evasion policy, stack line.
+- `docs/RESUME-CLAIMS.md` — benchmark, the `[N] tasks` row, judge and denominator
+  sections. **`sarthak_resume.tex` deliberately untouched** — it still says
+  WebVoyager, and feat-026 owns that rewrite.
+- `feature_list.json` — feat-004 and feat-016 respecified; feat-002 and feat-003
+  marked retained-as-findings with their evidence intact; feat-018 and feat-025
+  given the reporting obligations.
+- `README.md` — benchmark, and the "no evasion tooling" claim replaced with a
+  "What is and is not spoofed" section.
+- `init.sh` — banner and the end-of-run reminder.
+- `progress.md`, `session-handoff.md`.
+
+**No code, no scripts, no measurements.** Nothing was re-run.
+
 ## Notes for Next Session
 
 The agent is the easy half of this project. The measurement discipline is what
 makes it worth showing: blind human agreement on the judge, both denominators
 reported, and every failure hand-labeled.
 
-All three gates are answered. Vision works on `glm-4.6v`; 2 of 15 sites block
-us; 4 of 20 sampled tasks cannot be attempted as written. feat-004 turns those
-into the subset and the honest denominator.
+All three gates are answered, **but two of the three answers are now about a
+benchmark this project no longer scores on.** Vision works on `glm-4.6v` (still
+true, model-level). 2 of 15 sites block us and 4 of 20 sampled tasks are dead —
+both true of **WebVoyager**, both retained as findings, **neither transferable to
+Online-Mind2Web's 136 sites**. feat-004 has to rebuild that picture against the
+new pool before it can build the subset.
 
 The single most load-bearing thing learned this session: **a site that loads is
 not a site that works.** Google Search passed the reachability probe and then

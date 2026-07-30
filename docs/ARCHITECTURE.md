@@ -113,8 +113,10 @@ Traces are the actual deliverable. A pass rate without traces is unverifiable.
 
 ## Judging
 
-WebVoyager protocol: a vision model reviews the final screenshot and the agent's
-answer against the task. Run with `glm-4.6v`.
+A vision model reviews the final screenshot and the agent's answer against the
+task. Run with `glm-4.6v`. Online-Mind2Web's own WebJudge publishes ~85.7%
+agreement with human labels (o4-mini-backed) — a comparison point for the
+agreement sample, not a number this project may claim.
 
 Then hand-label a stratified sample of ≥30 episodes and report agreement. See
 `docs/RESUME-CLAIMS.md` for why this is not optional.
@@ -136,14 +138,21 @@ exactly one primary label. Starting set — refine once real failures exist:
 - `task-obsolete` — site changed, task no longer possible
 - `infra` — timeout, crash, network
 
-If a site blocks automated access, record it and move on. **Do not build
-detection evasion** — it is out of scope, and "the site blocked us, here is how
-often" is a legitimate and more interesting result.
+If a site blocks automated access, record it and move on. "The site blocked us,
+here is how often" is a legitimate and more interesting result than an arms race.
+
+**Evasion policy — changed 2026-07-30.** Headless masking is **permitted**: the
+user agent is overridden so the `HeadlessChrome` token is not announced, and
+nothing else is altered. **CAPTCHA solving, residential or rotating proxies, and
+stealth-fingerprint suites remain banned.** This replaces the unqualified "do not
+build detection evasion" rule that stood here before. See `AGENTS.md` and the
+2026-07-30 evasion-policy amendment in `docs/DECISIONS.md`.
 
 ## Stack
 
 TypeScript · Playwright · GLM via z.ai (`glm-4.7` or `glm-5.2` for the agent,
 `glm-4.6v` for vision and judging) · Bun.
 
-Chromium, headed or headless as G2 determines, with a standard user agent and no
-evasion tooling.
+Chromium, headed or headless as measured rather than assumed, with a declared
+`en-US` locale and fixed timezone, and no evasion tooling beyond the permitted
+headless user-agent masking above.

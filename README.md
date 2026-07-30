@@ -2,7 +2,13 @@
 
 An autonomous web agent that completes natural-language tasks on live websites,
 evaluated on a stratified subset of the
-[WebVoyager](https://arxiv.org/abs/2401.13919) benchmark.
+[Online-Mind2Web](https://github.com/OSU-NLP-Group/Online-Mind2Web) benchmark —
+300 tasks across 136 live websites (MIT-licensed code, CC-BY-4.0 data).
+
+> Previously planned against [WebVoyager](https://arxiv.org/abs/2401.13919), and
+> changed on 2026-07-30 because an audit run here found 4 of 20 sampled
+> WebVoyager tasks unattemptable in 2026 and Google Search refusing the queries
+> behind 43 of them. That audit is kept as a finding — see `docs/DECISIONS.md`.
 
 > **Status: planning.** Nothing is built yet. All numbers are TBD until
 > measured — see `docs/DECISIONS.md`.
@@ -19,8 +25,8 @@ changed."
 
 ## Method
 
-- **~100 tasks**, stratified across all 15 WebVoyager sites. The selection rule
-  is written down and reproducible.
+- **~100 tasks**, stratified across Online-Mind2Web. The stratification axis and
+  the selection rule are written down and reproducible.
 - **Bounded action space** — seven actions, no site-specific code anywhere. One
   Amazon-specific selector would invalidate the "unseen sites" claim.
 - **Two page serializations compared**: accessibility tree vs set-of-marks, run
@@ -36,17 +42,39 @@ changed."
 
 Three things this project does that benchmark write-ups usually skip:
 
-1. **The judge gets audited.** WebVoyager scores with an LLM judge, and a GLM
-   judge grading a GLM agent is grading its own homework. A blind hand-labeled
-   sample measures judge-vs-human agreement, reported alongside the pass rate.
-2. **Two denominators.** Pass rate over *attempted* tasks and over *reachable*
-   tasks, reported separately, because tasks broken by site changes are not
-   agent failures.
+1. **The judge gets audited.** These benchmarks score with an LLM judge, and a
+   GLM judge grading a GLM agent is grading its own homework. A blind
+   hand-labeled sample measures judge-vs-human agreement, reported alongside the
+   pass rate — and read against the ~85.7% human agreement Online-Mind2Web
+   publishes for its own WebJudge (that figure is o4-mini-backed, so it is a
+   reference point, not this project's expected number).
+2. **Two denominators, each with its n.** Pass rate over *attempted* tasks and
+   over *reachable-and-valid* tasks, reported separately and never one alone,
+   because tasks broken by site changes or bot walls are not agent failures.
 3. **Every failure is hand-labeled** into a taxonomy defined before the labeling
    started, with self-consistency measured on a re-labeled sample.
+4. **Blocked tasks are excluded from the scored set — and counted in public.**
+   The number excluded and the sites they sit on are published wherever the pass
+   rate is. An unpublished exclusion rule is indistinguishable from dropping the
+   hard tasks.
 
-Sites also block automated browsers. Where that happens it is recorded as a
-finding — **no evasion tooling is used**, deliberately.
+## What is and is not spoofed
+
+Sites block automated browsers, and where that happens it is recorded as a
+finding rather than fought.
+
+**What is masked:** the browser's user agent is overridden so it does not
+announce the `HeadlessChrome` token. That is the whole of it.
+
+**What is not:** no CAPTCHA solving, no residential or rotating proxies, no
+stealth-fingerprint suite — no WebGL/canvas/audio spoofing, no
+`navigator.webdriver` patching, no plugin or font forgery. Locale (`en-US`) and
+timezone are set explicitly and reported; the originating network region is not
+controlled, so some sites will still serve local currency and defaults.
+
+*This policy changed on 2026-07-30. Earlier revisions of this README said "no
+evasion tooling is used"; that is no longer accurate, and the line above says
+what is actually sent instead. See `docs/DECISIONS.md`.*
 
 ## Results
 

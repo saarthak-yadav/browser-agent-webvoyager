@@ -17,10 +17,20 @@ the current one is "basically done."
 
 ## What this project is
 
-An autonomous web agent evaluated on the WebVoyager benchmark. The agent is the
-easy half — the measurement discipline is the point. It backs a resume bullet
-that currently contains six bracketed placeholders, each of which is a
-measurement this project owes.
+An autonomous web agent evaluated on the **Online-Mind2Web** benchmark — 300
+tasks across 136 live websites
+(https://github.com/OSU-NLP-Group/Online-Mind2Web, MIT-licensed code, CC-BY-4.0
+data). The agent is the easy half — the measurement discipline is the point. It
+backs a resume bullet that currently contains six bracketed placeholders, each
+of which is a measurement this project owes.
+
+**Changed 2026-07-30 — the benchmark was WebVoyager (643 tasks, 15 sites).** The
+feat-003 decay audit is why: 4 of 20 sampled 2024 tasks are unattemptable today
+and Google Search alone blocks 43 tasks. Online-Mind2Web is maintained against
+exactly that failure mode. **The WebVoyager work is kept as a finding, not
+deleted and not re-run** — feat-002's reachability table and feat-003's decay
+counts stand as recorded measurements of the old set. Reason and consequences:
+`docs/DECISIONS.md`, 2026-07-30 benchmark-change entry.
 
 Read `docs/RESUME-CLAIMS.md` before writing code.
 
@@ -38,10 +48,31 @@ result, what you concluded. It is the only source for README and resume numbers.
 hostname, no special-casing a site that misbehaves. The resume claims the agent
 works "across unseen sites"; one Amazon-specific selector makes that false.
 
-**Do not build bot-detection evasion.** No stealth plugins, no fingerprint
-spoofing, no CAPTCHA solving. If a site blocks automated access, record it as a
-finding. "Three of fifteen sites blocked us, here is the rate" is a legitimate
-and more interesting result than an arms race.
+**Evasion policy — THIS RULE CHANGED on 2026-07-30. Read the new line, not the
+old one from memory.**
+
+Previously this section read: *"Do not build bot-detection evasion. No stealth
+plugins, no fingerprint spoofing, no CAPTCHA solving."* — an unqualified ban that
+also caught the headless user-agent string. That ban is **narrowed**, not lifted:
+
+- **Permitted:** headless masking, and only that — overriding the user agent so
+  the `HeadlessChrome` token is not announced. Nothing else about the browser is
+  altered.
+- **Still banned, without exception:** CAPTCHA solving, residential or rotating
+  proxies, and stealth-fingerprint suites (`puppeteer-extra-plugin-stealth` and
+  equivalents — WebGL/canvas/audio spoofing, `navigator.webdriver` patching,
+  plugin and font forgery).
+
+If a site blocks automated access after that, record it as a finding. "Two of
+fifteen sites blocked us, here is the rate" is a legitimate and more interesting
+result than an arms race.
+
+**The README must state what was masked.** It may not claim "no evasion tooling
+is used" — that is now false. Say plainly: the user agent is overridden to drop
+the `HeadlessChrome` token; nothing else is spoofed.
+
+Reason, and what it reverses in `docs/DECISIONS.md`: the 2026-07-30 evasion-policy
+amendment entry.
 
 **Separate agent failures from benchmark failures.** A task that is impossible
 because the site changed since 2024 is not the agent failing. Report both
@@ -60,8 +91,9 @@ In scope: agent loop, bounded action space, two serialization arms, vision
 fallback, ~100-task run, failure taxonomy, trace viewer.
 
 Out of scope, do not build: beating published SOTA, any UI beyond the trace
-viewer, site-specific handling, evasion tooling, training or fine-tuning, the
-full 643-task set. See `docs/PLAN.md`.
+viewer, site-specific handling, evasion tooling beyond the headless masking
+permitted above, training or fine-tuning, the full 300-task Online-Mind2Web set.
+See `docs/PLAN.md`.
 
 ## Definition of done
 
