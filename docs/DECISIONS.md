@@ -30,11 +30,26 @@ Format:
       14 still-valid, 2 changed, 4 impossible out of 20** (of the 4 impossible,
       2 are site decay and 2 are sites blocking automation). See the
       2026-07-30 entry below.
-- [ ] Subset selection rule and final task count (feat-004) — **now against
-      Online-Mind2Web, not WebVoyager.** See the 2026-07-30 benchmark-change entry.
-- [ ] Reachability of the Online-Mind2Web site pool (**new, unowned**) — feat-002
-      measured WebVoyager's 15 sites and **those figures do not transfer to 136
-      sites.** See the 2026-07-30 flag entry.
+- [x] Subset selection rule and final task count (feat-004) — **answered: 100
+      tasks, stratified on the benchmark's `level` label, drawn with seed 20260730
+      from the 253 tasks left after excluding 18 blocked sites.** Rule in
+      `docs/SUBSET-RULE.md`, artifact in `tasks/subset.json`, reproducible byte
+      for byte. See the three 2026-07-30 feat-004 result entries.
+- [x] Reachability of the Online-Mind2Web site pool (feat-004) — **answered:
+      93 of 145 sites completed a real first action; 18 blocked, 4 degraded,
+      30 no-action. 47 of 300 tasks sit on blocked sites.** Full sweep, not a
+      sample. Blocked set reproduced identically under a 2-3x load difference.
+      **6 of the 18 blocked sites load fine and refuse the first action** — a
+      goto-only audit would have kept them.
+- [ ] What headless UA masking actually buys — **narrowed, still open.** The
+      feat-004 sweep shows the GUI surface matters far more than the UA string
+      (15 sites needed headed, 3 passed only unmasked), but because the ladder
+      stops on success it **cannot show masking helping at all** — a site that
+      passes masked is never tried at stock. Answering it needs both arms over all
+      sites. See the 2026-07-30 feat-004 reachability entry, conclusion 2.
+- [ ] Decay of the Online-Mind2Web task set (**new, unowned**) — feat-003 measured
+      WebVoyager's decay, not this set's. The 100-task subset has been checked for
+      *reachability*, never for whether each task is still answerable as written.
 - [ ] Observation size distribution → token budget (feat-007)
 - [ ] Retry/replan constants and their justification (feat-010)
 - [ ] Vision trigger rate, broken down by trigger reason (feat-012)
@@ -935,3 +950,495 @@ pool is now an owed measurement with no owner — added to the list at the top o
 this file. feat-004 needs at least a partial answer, and a 136-site full audit at
 feat-002's per-site cost is a materially larger job than the 15-site one; scoping
 it (sample vs full sweep) is the first thing feat-004 has to decide.
+
+---
+
+## 2026-07-30 — feat-004 DECISION: the new reachability audit is a FULL SWEEP of every site in the pool, not a sample
+
+**Ran:** no site measurement yet — this is the scoping decision feat-004 was told
+to make first, plus the cost model it rests on. The cost figures come from two
+real sources: feat-002's recorded per-site timings in `runs/feat-002/results.json`,
+and a four-site smoke run of the new probe
+(`bun run scripts/check-first-action.ts --source=<4 sites> --out-prefix=smoke`).
+
+**Got:**
+
+Per-site cost, measured, not guessed:
+
+| probe | per-site wall clock | source |
+|---|---|---|
+| feat-002 `goto` only, serial | mean 4994 ms headless / 5252 ms headed | 30 rows in `runs/feat-002/results.json` |
+| feat-004 first action, one rung | 11.9 – 14.2 s | the four-site smoke run |
+
+So a completed-first-action probe costs roughly **2.4× a `goto` per site per
+rung**. The pool is ~145 hosts rather than 15, and the ladder is up to three
+rungs. Against that, the masked and stock headless rungs run at concurrency 4.
+
+Estimated wall clock for the full sweep, with the arithmetic shown so it can be
+checked rather than believed:
+
+- rung 1, masked headless, all ~145 sites, concurrency 4: `145 × 12 s / 4` ≈ **7 min**
+- rung 2, stock headless, only sites not yet `ok`; at an assumed 15% ≈ 22 sites,
+  concurrency 4: ≈ **1 min**
+- rung 3, headed, same ~22 sites, **serial** because headed Chromium drives a real
+  GUI and that is where feat-002 saw `newContext()` hang: `22 × 12 s` ≈ **4.5 min**
+- hangs: the smoke run hit one 90 s rung deadline in four sites. Budget several.
+
+**Total ≈ 20–30 minutes, unattended.** The 15% escalation rate is an assumption,
+flagged as such; it is the only soft number here, and the total is not sensitive
+to it — even at 50% escalation the sweep stays under an hour.
+
+**Concluded: full sweep of every site in the pool. Not a sample.**
+
+The decisive argument is not cost. **A sample cannot produce the artifact the
+settled scoring rule requires.** The 2026-07-30 blocked-task decision says blocked
+tasks are excluded from the scored set, that the decision is made *before* the run
+rather than after seeing results, and that the count and site list are published.
+That needs a **per-site verdict for every site the draw could touch** — and since
+the draw is over the whole eligible pool, that is every site. A sample yields a
+*rate* ("roughly N% of sites block automation"), which is a nice sentence and
+useless here: it cannot tell the sampler which tasks to drop. Sampling would push
+every undiscovered block to run time, where the same decision would then be made
+*after* seeing a failure, which is precisely the fitting-the-categories-to-the-result
+problem feat-003 and T5.1 both guard against.
+
+The cost finding is that this was affordable anyway. The earlier worry — recorded
+in `session-handoff.md` as "a 136-site sweep at feat-002's per-site cost is a
+materially bigger job" — assumed feat-002's serial, two-mode shape. Concurrency on
+the headless rungs and escalating only the failures changes the arithmetic more
+than the larger site count does.
+
+Two consequences that are part of the decision:
+
+1. **The ladder answers the open masking question for free.** Every site records
+   the rung at which it passed, so "what did dropping the `HeadlessChrome` token
+   actually buy" — flagged as unmeasured on 2026-07-30 — comes out of the same run
+   as a count of sites that passed masked-headless but not stock-headless. It is
+   **not** a full attribution: this design cannot separate the UA string from the
+   missing GUI surface for a site that only passes headed. That remains owed.
+2. **The sweep is a snapshot, not a standing fact.** Live sites change. The audit
+   is dated, its verdicts are committed to `tasks/site-audit.json` with per-rung
+   evidence, and any later run that disagrees is a new measurement, not a
+   correction of this one.
+
+---
+
+## 2026-07-30 — feat-004 MEASUREMENT: the first-action probe, validated on four sites with known behaviour
+
+**Ran:** `bun run scripts/check-first-action.ts --source=<4-site fixture> --out-prefix=smoke --concurrency=4`
+against arxiv.org, google.com, dictionary.cambridge.org and allrecipes.com — the
+sites whose behaviour feat-002 and feat-003 already recorded, so the instrument
+can be checked against known answers before it is pointed at 145 unknown ones.
+
+**Got:** `ok=1 blocked=3 degraded=0 no-action=0 error=0 (of 4 sites)`.
+
+| site | load | first action | result | verdict |
+|---|---|---|---|---|
+| arxiv.org | HTTP 200 | `search-submit`, box revealed by `[aria-expanded="false"][aria-controls*="search"]` | `→ /search/?query=blue&searchtype=all&source=header`, HTTP 200, 37 499 chars | **ok** |
+| google.com | HTTP 200, 187 chars | `search-submit` into `textarea[name="q"]` | `→ /sorry/index`, **HTTP 429**, "unusual traffic" | **blocked**, all 3 rungs |
+| allrecipes.com | HTTP 200 headed, 5926 chars | `search-submit` into `input[name="q"]#1` | `→ /search?q=blue`, **HTTP 402** | **blocked**, all 3 rungs |
+| dictionary.cambridge.org | HTTP 403, "just a moment" | none — refused on load | — | **blocked**, all 3 rungs |
+
+**Concluded:** the probe reproduces feat-003's Google Search finding on the live
+site and **surfaces one genuinely new result**.
+
+1. **The first-action lesson is confirmed, on the site that taught it.**
+   google.com serves a clean 200 landing page — a `goto` probe scores it reachable,
+   exactly as feat-002 did — and answers the first query with `/sorry/index` and
+   HTTP 429. The probe catches it.
+2. **NEW: Allrecipes does the same thing, and feat-002 missed it.** feat-002
+   recorded Allrecipes as headed-OK (`HTTP 200, 5837 chars`) on a `goto`. Its
+   *search* returns **HTTP 402 in all three rungs, headed included**. So the
+   landing-page-versus-usable gap is not a Google peculiarity; it is a second
+   independent instance, on a site the old audit scored as fine. This is a finding
+   about the WebVoyager pool recorded here rather than in feat-002, because
+   feat-002 is closed and not re-run.
+3. **Building the instrument found four defects that would have corrupted the
+   sweep**, each caught by a real site rather than by inspection:
+   - **An input-only selector ladder scored google.com `no-action`.** Its search
+     field is a `textarea`, and the probe silently failed to test the one site the
+     whole feature exists for. A probe that cannot reach the known-hard case
+     measures nothing.
+   - **A post-action status race produced a false `ok` on allrecipes.com.** The
+     navigation response arrived while the action was in flight and was then
+     overwritten by the reset, so `classify()` fell back to the *pre-action* 200
+     and reported the 402 page as served. The reset now happens before the action.
+   - **A later rung's error erased earlier evidence.** Cambridge Dictionary
+     returned a clean 403 at both headless rungs and then hung the headed rung past
+     its 90 s deadline; the site resolved to `error`, quietly leaving the exclusion
+     list on the strength of a hang. Resolution now takes the last rung that
+     *observed* something.
+   - **A link-click that never navigated counted as a completed action.**
+     arxiv.org's `/search` anchor opens an in-page overlay; the probe clicked it,
+     went nowhere, and scored the site `ok`. A link-click now has to actually move.
+   All four are pinned by tests in `tests/first-action.test.ts`, and all four
+   mutations of those tests fail as they should.
+4. **Caveat on n.** Four sites, hand-picked *because* their answers were known.
+   This validates the instrument; it is **not** an estimate of anything about the
+   145-site pool, and the `ok=1 blocked=3` split must never be quoted as a rate.
+
+---
+
+## 2026-07-30 — feat-004 DECISION: the stratification axis is the benchmark's own `level` label
+
+**Ran:** no measurement — the axis choice feat-004 was required to make, justify,
+and state the cost of. Distributional figures quoted below were computed from a
+third-party mirror of the task file and are **provisional**; see the provenance
+entry that follows.
+
+**Got:** n/a.
+
+**Concluded:** **~100 tasks stratified on `level`, the difficulty label
+Online-Mind2Web ships with each task. One axis. No second axis and no per-site cap.**
+
+The full rule is written for a reader in `docs/SUBSET-RULE.md`; the executable
+form is `scripts/lib/subset.ts` and `scripts/select-subset.ts`.
+
+**Why `level`, over the two alternatives the spec named:**
+
+1. **It is a published field, so the strata need no judgement from us.** Site
+   domain/category would require inventing a taxonomy over ~145 hosts and
+   assigning each one by hand. That is unreproducible by a reader, and it is a
+   place where bias could hide with no way to detect it. `level` is in the file;
+   two people re-deriving the strata get the same answer.
+2. **Difficulty is the axis that actually confounds the headline number.** The
+   claim this subset supports is a pass rate. Pass rates move hardest with task
+   difficulty, so a subset that over-sampled easy tasks would inflate the number
+   in the one direction an interviewer will probe. Proportional strata on `level`
+   make the subset's difficulty mix the benchmark's mix, which is what lets
+   "~100 of 300" be defended as representative on the dimension that matters most.
+3. **It gives feat-020 usable per-stratum n.** ~100 tasks over three levels lands
+   near 27/48/25 — each large enough to carry a failure-mode breakdown. Over ~145
+   sites it would be ~0.7 tasks per site, which supports nothing.
+4. **Over task length specifically:** `reference_length` is the underlying step
+   count, but `level` is not a pure function of it — in the file, `medium` reaches
+   12 steps and `hard` starts at 11, so the labels carry human judgement the raw
+   number does not. Stratifying on the label also keeps our strata comparable with
+   the benchmark's own leaderboard, where a bucketing we invented would not be.
+
+**What this consciously gives up — all four are real, and none is engineered around:**
+
+1. **No per-site or per-domain pass rate.** Sites enter the subset only
+   incidentally. The project **cannot** say "the agent does worse on travel sites
+   than on retail", and must not, anywhere. That claim is not measurable from this
+   subset.
+2. **Site coverage is uncontrolled and uneven.** At ~1/3 sampling over a pool
+   where most hosts carry one task and the largest carries about a dozen, roughly
+   half the sites contribute nothing and a handful contribute several. The
+   realized per-site counts are published in `tasks/subset.json` (`siteCounts`)
+   so a reader sees the concentration rather than taking it on trust.
+3. **Concentration is a correlated risk.** If a heavily-represented site breaks or
+   starts blocking mid-run, it takes several subset tasks with it at once. That is
+   accepted, and it is why blocks are reported with their site list.
+4. **The labels are the benchmark's judgement, not ours, and they measure human
+   effort.** `level` is derived from the human reference trajectory; a two-step
+   task on a bot-hostile site is `easy` by label and impossible in practice.
+   Difficulty-for-a-human is a proxy for difficulty-for-this-agent, and the gap
+   between them will show up in feat-020's failure distribution, not here.
+
+**Rejected: adding a per-site cap.** It would bound the concentration in (2) and
+(3) cheaply. It is rejected because the spec asks for **one** axis and a cap is a
+second one wearing a different hat — it controls site representation, which is
+exactly what choosing `level` declined to control. The benchmark's own site
+concentration is a property of the benchmark; suppressing it would make the subset
+unrepresentative on a dimension nobody decided to manage. Reporting it is the
+honest alternative, and it matches how feat-002 handled a blocked site: a finding
+to publish, not a problem to engineer around.
+
+---
+
+## 2026-07-30 — feat-004 PROVENANCE: the canonical task file is gated, and the mirror is a different revision
+
+**Ran:**
+```
+curl -sSL https://huggingface.co/datasets/osunlp/Online-Mind2Web/resolve/main/Online_Mind2Web.json
+curl -sSL https://huggingface.co/api/datasets/osunlp/Online-Mind2Web/tree/main
+gh api repos/theredsix/abp-online-mind2web-results/contents/Online_Mind2Web.json
+```
+
+**Got:**
+
+- The canonical file is **gated**: `HTTP 401`, *"Access to dataset
+  osunlp/Online-Mind2Web is restricted. You must have access to it and be
+  authenticated to access it."* The dataset metadata reports `"gated":"auto"`, so
+  the gate is accept-and-go rather than a review, but it still requires a logged-in
+  HuggingFace account. `hf-mirror.com` returns the same 401.
+- The repo tree API, which is *not* gated, reports the current revision of
+  `Online_Mind2Web.json` as **size 88382, git blob oid
+  `e8a5e5a99f2be9eae14f4e4259bd5af562f80da9`**, `lastModified` 2026-07-18.
+- The task set is **not in the GitHub code repo** — that holds the WebJudge
+  evaluation code and result dumps only.
+- A third-party mirror exists at `theredsix/abp-online-mind2web-results`:
+  300 tasks, correct schema (`task_id`, `confirmed_task`, `website`,
+  `reference_length`, `level`), **size 88329, sha256
+  `50d330ee9f347c5ae136e52421516590033b146df305ab091c5a36b199b14aa4`**, git blob
+  oid `f38e1dbb2f3d7ed7c966a8c818cd97bb2020c2e1`.
+
+**Concluded:** **The mirror is demonstrably not the current canonical revision** —
+different size, different blob oid. Its newest task-id date suffix is `_010226`
+(2 Jan 2026) against a canonical `lastModified` of 18 Jul 2026, and the dataset
+card's own news line records that tasks are revised in batches, so the mirror is
+very likely several revisions stale. **The subset is therefore drawn from the
+canonical file only**, and `tasks/subset.json` records the sha256 of the exact
+bytes it was drawn from, because a subset is only reproducible against the
+revision it came from and this set is actively maintained.
+
+**Resolved the same day.** The canonical file was obtained and verified
+byte-identical to the current HF revision — **size 88382, git blob oid
+`e8a5e5a99f2be9eae14f4e4259bd5af562f80da9`**, sha256
+`7dedf381531d423dc0fc48d21dc1d425655dd75f38b10211a880fa09102f257f`. It is committed
+at `tasks/Online_Mind2Web.json`, and the sha256 is recorded in `tasks/subset.json`.
+
+**The mirror was indeed a different revision, and the difference is not cosmetic.**
+Both files hold 300 tasks and normalise to 145 distinct hosts, but the levels
+differ: canonical **easy 80 / medium 141 / hard 79**, mirror easy 80 / medium 143 /
+hard 77. Two tasks moved from `medium` to `hard` between revisions. Drawing from
+the mirror would have allocated **27/48/25 instead of the correct 27/47/26** — a
+different subset, stratified against a difficulty mix the benchmark no longer has.
+The provenance check was not ceremony.
+
+**One measured fact to state instead of repeating the published one.** The dataset
+card says *"300 diverse tasks from 136 popular websites"*. The canonical file's 300
+`website` values are **147 distinct URL strings normalising to 145 distinct hosts**.
+This project reports **145**, the number it measured, and does not repeat 136 as if
+it had counted it. The gap is presumably how the maintainers group a site; either
+way, an unexplained count is not a number this project may quote.
+
+---
+
+## 2026-07-30 — feat-004: the first full-sweep attempt died on the browser-relaunch path, exactly where the handoff said it would
+
+**Ran:** `bun run scripts/check-first-action.ts --concurrency=4` over all 145 sites.
+
+**Got:** the run produced two real verdicts and then 143 identical failures:
+
+```
+ERROR     accuweather.com                 240ms   | probe error: goto: net::ERR_HTTP2_PROTOCOL_ERROR
+BLOCKED   adoptapet.com                  4173ms  load: interstitial phrases: request blocked (HTTP 403)
+ERROR     4shared.com                   90000ms  rung-level failure: deadline of 90000ms exceeded
+ERROR     9gag.com                      90000ms  rung-level failure: deadline of 90000ms exceeded
+ERROR     airbnb.com                    90000ms  rung-level failure: deadline of 90000ms exceeded
+... (every remaining site, identically)
+```
+
+`ps` confirmed the diagnosis: **zero Chromium processes alive**, the Bun process
+idle at 0% CPU with no open TCP sockets. Chromium had died two sites in, and every
+subsequent `browser.newContext()` hung against a dead handle until its deadline.
+Left alone the run would have taken about eight hours to produce a file of nothing
+but `error`, and — this is the part that matters — **it would have looked like a
+result.** 4shared.com, 9gag.com and airbnb.com all probe fine; the sweep would have
+reported them unreachable.
+
+**Concluded:** the cause was a straight omission. `check-reachability.ts` guards its
+serial loop with `if (!browser.isConnected()) browser = await launch()`, and that
+guard was **not carried over** when the sweep was written with a concurrent worker
+pool sharing a single browser.
+
+`session-handoff.md` had flagged this exact class in advance — *"the single real
+bug typecheck found was in the browser-relaunch path — error recovery that no run
+had ever executed... feat-015's runner is mostly recovery code. Test those paths
+directly."* It fired on the first real run of the next thing built.
+
+Fixes, all three now in `scripts/check-first-action.ts`:
+
+1. **Each worker owns its own browser and replaces it after any failure.** Not just
+   on `isConnected() === false`: a browser that produced a failure is closed and
+   relaunched unconditionally, because a wedged one stays wedged and the blast
+   radius of reusing it is every remaining site.
+2. **The rung deadline drops from 90s to 60s.** A site that cannot load and take
+   one action inside a minute is not usable by the agent either, and a shorter cap
+   bounds what a bad state can cost.
+3. **Progress is written to `runs/feat-004-progress.log`, flushed per line.** Bun
+   block-buffers stdout when redirected to a file, so for six minutes a wedged run
+   and a working run were indistinguishable from the outside. That is what let the
+   failure go unnoticed at first, and it is a property of every long unattended run
+   this project will do.
+
+**Verified, not assumed.** The recovery path was exercised deliberately: an
+8-site run with every Chromium process killed from outside mid-run
+(`pkill` at 21:20:00, after site 2). The sweep relaunched and completed sites 3–7
+normally — `4shared.com` and `airbnb.com`, which the broken run had reported as
+90-second timeouts, both came back `ok`. Killing the browser is now a check that
+has actually been run rather than a path that has only been read.
+
+**Carry to feat-015.** The benchmark runner is mostly recovery code, it runs
+unattended for hours, and this is the second time this exact path has been the bug.
+Its resume-after-interruption and dead-browser handling must be tested by inducing
+the failure, not by inspection — and it must log progress in a way that a stall is
+visible from outside the process.
+
+---
+
+## 2026-07-30 — feat-004 MEASUREMENT: first-action reachability of all 145 Online-Mind2Web sites
+
+**Ran:** `bun run scripts/check-first-action.ts --concurrency=20`, a full sweep of
+every site in the pool. Ladder per site, stopping at the first rung that
+completed an action: masked headless → stock headless → headed. One fixed query
+(`blue`) typed at every site, generic selectors only, locale `en-US`, timezone
+`America/New_York`, no proxying. Evidence per rung in
+`runs/feat-004/attempts.jsonl`; committed verdicts in `tasks/site-audit.json`.
+
+**Got:**
+
+```
+ok=93 blocked=18 degraded=4 no-action=30 error=0  (of 145 sites)
+tasks on blocked sites: 47 of 300
+sites that needed escalation past headless-masked: 18
+```
+
+Of the 93 that completed an action: **70 by submitting a search, 23 by a
+same-origin link click** (the weaker probe, recorded as such). Of the 145 sites,
+**73 contribute no task to the subset** and 72 do.
+
+**The 18 blocked sites, and the 47 tasks they cost:**
+
+| tasks | site | reason |
+|---|---|---|
+| 9 | adoptapet.com | "request blocked" (HTTP 403) |
+| 8 | apartments.com | "access denied" |
+| 7 | cars.com | "just a moment" (HTTP 403) |
+| 6 | healthgrades.com | HTTP 403 |
+| 2 | imdb.com | "security check" (HTTP 202) |
+| 2 | microcenter.com | "just a moment" (HTTP 403) |
+| 2 | webmd.com | "captcha" (HTTP 200) |
+| 1 each | allrecipes, bandcamp, bhphotovideo, boardgamegeek, carvana, cvs, discogs, marriott, phys.org, remax, ziprecruiter | mixed: 403s, challenges, and first-action refusals |
+
+**Concluded:**
+
+**1. The first-action probe earns its cost. 6 of the 18 blocked sites — a third —
+serve a working landing page and then refuse the first action.** allrecipes.com,
+bandcamp.com, bhphotovideo.com, carvana.com, discogs.com and ziprecruiter.com all
+return HTTP 200 with thousands of characters of real content, and refuse the
+search. **A `goto`-only audit of this pool would have called 132 of 145 sites
+reachable and kept those 6 tasks in the scored set as attemptable.** feat-003
+predicted exactly this from a single site (Google Search); it generalises.
+
+**2. Masking is not the lever it was hoped to be, and the ladder cannot fully
+answer the question.** 75 of the 93 passing sites passed at masked headless, 3
+only at stock headless, and **15 needed a real headed browser**. So the GUI
+surface matters five times more often than the UA string does.
+
+But note what this design *cannot* show: because the masked rung runs first and
+the ladder stops on success, **a site that passes masked is never tried at stock,
+so this run produces no evidence that masking helped anything.** It can only
+detect masking *hurting* (masked fails, stock passes) — which happened 3 times,
+and with no repeat trials those 3 are indistinguishable from flakiness.
+**Answering "what does masking buy" properly needs both arms run over all sites,
+which this is not.** The owed measurement stays open, narrowed.
+
+**3. Verdicts are reproducible where it counts — verified, not asserted.** The
+sweep ran at concurrency 20 (load average 16–25). 43 sites were re-probed at
+concurrency 3 (load ~9): all 18 blocked, all 4 degraded, a 10-site `no-action`
+sample and an 11-site `ok` control.
+
+- **The blocked set is identical: 18 vs 18, no site in one and not the other.**
+  The exclusion list — the only verdict the scored set depends on — does not move
+  with machine load.
+- Overall agreement 40/43 (93%). **All 3 disagreements are `no-action` → `ok`**,
+  the predicted direction: under load a search affordance did not become visible
+  in time. None of them is excluded either way.
+- So **the published `no-action` count of 30 is an upper bound** on "sites this
+  probe could not exercise", not a claim that those sites have no search box.
+
+**4. This is a dated snapshot, not a standing fact,** and one site proves it:
+google.com resolved `blocked` in an early validation run (`/sorry/index`,
+HTTP 429, "unusual traffic") and `ok` in the sweep. Its refusal is intermittent,
+and it carries 5 subset tasks. Live-site verdicts are re-measurable, not
+permanent, and feat-019's taxonomy needs a mid-episode `site-blocked` category
+regardless of what this audit recorded.
+
+---
+
+## 2026-07-30 — feat-004: two settle bugs that silently corrupted a completed sweep
+
+**Ran:** a full 145-site sweep completed and produced
+`ok=89 blocked=15 degraded=13 no-action=28`. **Those numbers are discarded and
+must never be quoted.** This entry records why, because the failure mode is the
+interesting part.
+
+**Got:** the audit reported `degraded — 0 chars of text, 0 interactive elements`
+for **amazon.com, booking.com, imdb.com, airbnb.com, thumbtack.com,
+backcountry.com** and near-empty for **google.com** — all after settling in
+~610ms. feat-002 recorded Amazon and Booking loading fine with full content,
+which is the contradiction that exposed it.
+
+**Concluded:** two independent defects, both introduced by replacing a fixed
+`waitForTimeout` with adaptive settling. The replacement was right — a fixed
+sleep measures wall-clock, so under load a page renders less inside it and the
+probe reports machine load as site behaviour — but the implementation was wrong
+twice:
+
+1. **An empty SPA shell satisfied the stability rule instantly.** "Visible text
+   length unchanged across two polls, `readyState` complete" is true at zero
+   characters while an app boots. Fixed: zero-length text is never stable, plus a
+   2s floor before stability may be accepted at all, plus 3 consecutive polls.
+2. **A redirect during settling was read as "done".** Even after (1) those sites
+   still exited at ~1.2s — *below* the new floor, so it was not the stability
+   rule. `page.evaluate` throws "execution context was destroyed" when the page
+   navigates mid-poll, and the `catch → break` classified the empty intermediate
+   document. Fixed: a failed evaluate means keep waiting for the page that
+   replaces it; only a closed page ends settling. The reason settling stopped is
+   now recorded per probe (`stable` / `cap` / `cap-after-navigation` /
+   `page-closed`).
+
+After both fixes the same sites read correctly — amazon.com 5325 chars growing to
+14 699 across its search, airbnb.com 8835, imdb.com correctly `blocked` on its
+security check — and the pool-wide `degraded` count fell from 13 to 4.
+
+**The rule now lives in `lib/first-action.ts` as a pure function (`stepSettle`)
+with six tests**, mutation-checked, one of which reintroduces the original bug
+and fails as it must. A heuristic that silently corrupted a completed 145-site
+sweep does not get to stay untested.
+
+**Carry to feat-015:** this is the third error-recovery defect in this feature
+alone — a shared browser with no relaunch guard, an unbounded `browser.close()`
+inside the recovery path, and now a `catch → break` that turned a transient
+failure into a measurement. Every one produced *plausible output* rather than a
+crash. The benchmark runner must be tested by inducing failures, and its outputs
+sanity-checked against known-good sites, because a corrupted run looks exactly
+like a successful one.
+
+---
+
+## 2026-07-30 — feat-004 RESULT: the scored subset, 100 tasks
+
+**Ran:** `bun run scripts/select-subset.ts`
+
+**Got:**
+
+```
+300 tasks, 145 sites
+source sha256: 7dedf381531d423dc0fc48d21dc1d425655dd75f38b10211a880fa09102f257f
+excluded as blocked: 47 tasks across 18 sites
+stratum      in-full-set  eligible  allocated
+easy                  80        73         29
+medium               141       113         45
+hard                  79        67         26
+subset: 100 tasks across 72 sites
+```
+
+Re-running reproduces `tasks/subset.json` byte for byte — md5
+`eb7dcacf6b87a42a888a39518062485c` across two runs.
+
+**Concluded:** the scored set is **100 tasks**, stratified on `level`, drawn with
+mulberry32 seeded 20260730 from the 253 tasks left after excluding the 18 blocked
+sites. The written rule is `docs/SUBSET-RULE.md`; `tests/subset-artifact.test.ts`
+pins the committed artifact to the committed rule.
+
+Properties a reader should be able to check:
+
+- **Difficulty mix matches the pool it was drawn from exactly** — 29/45/26 against
+  an eligible pool of 29%/45%/26%. Against the *full* 300 it is 29/45/26 vs
+  27/47/26; the small drift is the blocked sites not being difficulty-neutral,
+  and it is visible rather than hidden because both columns are published.
+- **Site concentration, published rather than capped:** 72 of 145 sites appear,
+  so **73 sites contribute nothing**. 54 sites contribute one task, 13 two, 2
+  three, 1 four, and 2 five. The largest single-site share is **google.com with 5
+  of 100** — which matters, because google.com's block is intermittent (above).
+- **47 tasks excluded as blocked, across 18 named sites**, published here, in
+  `tasks/subset.json` under `excludedAsBlocked`, and required alongside every
+  pass rate this project reports.
+
+The denominators feat-018 will report: **100 attempted**, and reachable-and-valid
+= 100 minus whatever proves invalid on inspection. The 47 blocked tasks are
+outside both, by the pre-registered rule, and their count travels with the number.

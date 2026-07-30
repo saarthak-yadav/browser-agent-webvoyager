@@ -1,0 +1,904 @@
+{
+  "feature": "feat-004",
+  "seed": 20260730,
+  "source": "tasks/Online_Mind2Web.json",
+  "sourceSha256": "7dedf381531d423dc0fc48d21dc1d425655dd75f38b10211a880fa09102f257f",
+  "totalTasks": 300,
+  "totalSites": 145,
+  "siteAudit": {
+    "file": "tasks/site-audit.json",
+    "date": "2026-07-30",
+    "blockedSites": [
+      "adoptapet.com",
+      "allrecipes.com",
+      "apartments.com",
+      "bandcamp.com",
+      "bhphotovideo.com",
+      "boardgamegeek.com",
+      "cars.com",
+      "carvana.com",
+      "cvs.com",
+      "discogs.com",
+      "healthgrades.com",
+      "imdb.com",
+      "marriott.com",
+      "microcenter.com",
+      "phys.org",
+      "remax.com",
+      "webmd.com",
+      "ziprecruiter.com"
+    ]
+  },
+  "stratifiedOn": "level",
+  "rule": "Stratified on the benchmark's own `level` field, the single axis. Tasks on sites the feat-004 first-action audit recorded as blocked are excluded first (47 tasks across 18 sites, all listed below). The remaining pool is split by level, 100 slots are allocated across the levels in proportion to their eligible counts by the largest-remainder method, and within each level the tasks are sorted by task_id and drawn without replacement with mulberry32 seeded 20260730, consuming the stream in the order easy, medium, hard. No per-site cap and no second axis. See docs/SUBSET-RULE.md for why this axis and what it gives up.",
+  "strata": [
+    {
+      "level": "easy",
+      "inFullSet": 80,
+      "eligible": 73,
+      "allocated": 29
+    },
+    {
+      "level": "medium",
+      "inFullSet": 141,
+      "eligible": 113,
+      "allocated": 45
+    },
+    {
+      "level": "hard",
+      "inFullSet": 79,
+      "eligible": 67,
+      "allocated": 26
+    }
+  ],
+  "subsetSize": 100,
+  "subsetSiteCount": 72,
+  "siteCounts": {
+    "qatarairways.com": 1,
+    "cookpad.com": 1,
+    "google.com": 5,
+    "mayoclinic.org": 2,
+    "recreation.gov": 2,
+    "thumbtack.com": 3,
+    "nvidia.com": 1,
+    "theweathernetwork.com": 2,
+    "healthline.com": 4,
+    "wanderlog.com": 1,
+    "fedex.com": 1,
+    "accuweather.com": 3,
+    "rottentomatoes.com": 1,
+    "landwatch.com": 2,
+    "coursera.org": 2,
+    "drugs.com": 5,
+    "foxsports.com": 1,
+    "iclr.cc": 1,
+    "osu.edu": 1,
+    "apple.com": 1,
+    "dmv.virginia.gov": 1,
+    "tumblr.com": 1,
+    "careers.walmart.com": 1,
+    "cboe.com": 1,
+    "flightaware.com": 2,
+    "birkenstock.com": 1,
+    "bestbuy.com": 2,
+    "irs.gov": 1,
+    "nba.com": 2,
+    "bbb.org": 2,
+    "us.trip.com": 1,
+    "us-appliance.com": 1,
+    "craigslist.org": 1,
+    "americanexpress.com": 1,
+    "tourradar.com": 1,
+    "sec.gov": 1,
+    "redbull.com": 1,
+    "imgur.com": 1,
+    "jcpenney.com": 1,
+    "student.com": 1,
+    "espn.com": 1,
+    "carmax.com": 2,
+    "ups.com": 1,
+    "stubhub.com": 2,
+    "petfinder.com": 2,
+    "ign.com": 1,
+    "traderjoes.com": 1,
+    "weather.com": 1,
+    "eventbrite.com": 1,
+    "usps.com": 1,
+    "justice.gov": 1,
+    "github.com": 1,
+    "akc.org": 2,
+    "parkers.co.uk": 1,
+    "cbp.gov": 1,
+    "americashealthrankings.org": 1,
+    "kaggle.com": 1,
+    "raisingcanes.com": 1,
+    "youtube.com": 1,
+    "samsung.com": 1,
+    "arxiv.org": 1,
+    "babycenter.com": 1,
+    "doctor.webmd.com": 1,
+    "us.speedo.com": 1,
+    "ohiomeansjobs.ohio.gov": 1,
+    "uniqlo.com": 1,
+    "wineaccess.com": 1,
+    "store.steampowered.com": 1,
+    "4shared.com": 1,
+    "macyswineshop.com": 1,
+    "spothero.com": 1,
+    "gov.uk": 1
+  },
+  "excludedAsBlocked": {
+    "taskCount": 47,
+    "sites": [
+      "adoptapet.com",
+      "allrecipes.com",
+      "apartments.com",
+      "bandcamp.com",
+      "bhphotovideo.com",
+      "boardgamegeek.com",
+      "cars.com",
+      "carvana.com",
+      "cvs.com",
+      "discogs.com",
+      "healthgrades.com",
+      "imdb.com",
+      "marriott.com",
+      "microcenter.com",
+      "phys.org",
+      "remax.com",
+      "webmd.com",
+      "ziprecruiter.com"
+    ],
+    "taskIds": [
+      "070c907d34a4ce71dfdbea38f9c5d4d8",
+      "0a54069a0ef542e571d1fee7f39c93d5",
+      "207e933d1bba815bcb58664b5d82c085",
+      "2218042362d8fae73756eb309848c2b2",
+      "26784156ae9859a0dd6c5920eb106f91",
+      "26a0e5c21c145dd8448aa92f35bec5ea",
+      "2c8ef01a92c71ba9ef2e59bb17eea2b3_110325",
+      "2e4e21cf1449c6894b17d571c47b77ea",
+      "3443e9c3151fef19a3c3a45eb2c13640_070826",
+      "367d843c640637745e8fafa741cca13b",
+      "39c388cdc468688c8139cc2bb5157c13",
+      "3ae28b3c440efe87dc700480b78ac608",
+      "43a1ca251f11c6b0bdd0379766cc49e6",
+      "4639a54f3ab549864fd8d60b7398b1e1",
+      "547f5729c59d5d12a457a3ebb74c31c6_010226",
+      "561693d6eec7bbfba3fefe9e4b26decb",
+      "56f8890a837c49f7df766b9c981646f3",
+      "62f1626ce249c31098854f8b38bdd6cf_110325",
+      "75146b7b67388b9244e0f21a1527c022",
+      "75a1b5dcd2c28508a971d98d51fe5767",
+      "79f0bd7df6e685f30f20025cc6755c0a_110325",
+      "7b182a5087347d494b48a29dbc0f1d3e",
+      "7c09c2c7c87cf6bb1138701eb54284ea",
+      "84ef883a37af638c3bcf7561f28ce80a",
+      "84f806c7fc15576673915f195efa72df",
+      "8f2611047de227a2ca8bda13f6e2e5fb_110325",
+      "905cb53061c33aa2d77e485fe1fca516",
+      "987bad7c6d4726d64232a8a1c3386888",
+      "99daaed9a83c266341d28aa40067d376",
+      "9f1cba613830ca1c6a58f9498c06e679_110325",
+      "aafd1fddea1558466ac6133934d35156",
+      "afcebfed28bea091d58f49ea6cb8194b",
+      "b69eb4de621e9e265676daac44938f3f",
+      "b962927dfe03bf2274a54381127ed433",
+      "c073ac1bcf40f84c599affc97edbc396",
+      "c0fa2c0e622971955cabf5bcf7b777e8",
+      "c181f903ec1107b850032c17cad88393",
+      "cad62d2be0c53f08a416457486b3db23",
+      "cfafe3771369d1d261e9f7ecd44c296d",
+      "d02d236836924919f35f2438d9ed2374",
+      "d7c955b47af68e01766fa86d0bee08a7",
+      "d8e2a81fa621ce4737e5ea85671b630e_110325",
+      "e4e097222d13a2560db6f6892612dab6",
+      "e9f4dfc67e0e6aa37f05f7cc5aa7428c",
+      "ef289e34a2f59a707cb07e2a6229ff03",
+      "fb7b4f784cfde003e2548fdf4e8d6b4f",
+      "fcf4952d2a1d80ea505c555c3c3b54e7"
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "005be9dd91c95669d6ddde9ae667125c",
+      "confirmed_task": "Find the weight of baggage allowance for economy class on Qatar Airways.",
+      "website": "https://www.qatarairways.com/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "16200f51d63f0a47a58fa17acd49e368",
+      "confirmed_task": "Find a recipe that includes eggplant and mushrooms.",
+      "website": "https://cookpad.com/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "1fc28d91d25ccd1c6ba268101326a654",
+      "confirmed_task": "Find the 5-day price chart for Bitcoin.",
+      "website": "https://www.google.com/finance/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "23204728192da9f73197a613d9681c18",
+      "confirmed_task": "What are the Symptoms and causes of fever?",
+      "website": "https://www.mayoclinic.org/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "246d654fab7c31d9651007e39e75f74f",
+      "confirmed_task": "Open the most helpful 5-star reviews of Alpine Ridge.",
+      "website": "https://www.recreation.gov/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "2532fd402d3c741b79894e6ff2269f53",
+      "confirmed_task": "find electricians near 10203.",
+      "website": "https://www.thumbtack.com/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "29b7372d5a3884a2ba831af2d117af3c",
+      "confirmed_task": "Browse the first top news of Microsoft stock on Google Finance.",
+      "website": "https://www.google.com/finance/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "3621b099326c7aebd2e2dac6be3b52d1",
+      "confirmed_task": "Open the profile page of the leader of the Nvidia Learning and Perception Lab.",
+      "website": "https://www.nvidia.com/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "4e3f6a538cc1f7321cfc50260db9545d",
+      "confirmed_task": "Look up the current temperature for zip code 10019.",
+      "website": "https://www.theweathernetwork.com/",
+      "reference_length": 2,
+      "level": "easy"
+    },
+    {
+      "task_id": "52efbab520734ef9bf7c09ba0f62cdc8",
+      "confirmed_task": "Find the app for iOS.",
+      "website": "https://www.recreation.gov/",
+      "reference_length": 2,
+      "level": "easy"
+    },
+    {
+      "task_id": "5c00e9561eae94789443f405525a5869",
+      "confirmed_task": "Find the recommended dosage for Vivitrol.",
+      "website": "https://www.healthline.com/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "662ae0f2d3ac851dbcdd245f908277e3",
+      "confirmed_task": "What is the second stop among the best stops along the road trip from Yellowstone National Park to Las Vegas?",
+      "website": "https://wanderlog.com/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "6db4a0e346976f2729ba9afcd3208941",
+      "confirmed_task": "Look up tracking information for shipment #3023858502.",
+      "website": "https://www.fedex.com/en-us/home.html",
+      "reference_length": 2,
+      "level": "easy"
+    },
+    {
+      "task_id": "853afd530c72f4b00ffc32ae854efaf8",
+      "confirmed_task": "Show me the wind flow map for Belo Horizonte.",
+      "website": "https://www.accuweather.com/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "871e7771cecb989972f138ecc373107b",
+      "confirmed_task": "Find the weather for Vancouver, British Columbia for the next seven days.",
+      "website": "https://www.theweathernetwork.com/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "95cad96f2e43f3c0d8efad1331c77c8c",
+      "confirmed_task": "View the list of the Most Popular TV on rotten tomatoes.",
+      "website": "https://www.rottentomatoes.com/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "9bb63ad0e38d5691a618932a8b31c05a",
+      "confirmed_task": "Look for reviews of a Nest Hello Video Doorbell and filter by 1-star ratings.",
+      "website": "https://www.google.com/shopping?udm=28",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "9ef1a8972f375db59c0e6329e11b7939",
+      "confirmed_task": "Find Farms land in Wilkes County, NC with the lowest price.",
+      "website": "https://www.landwatch.com/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "a11ecdff735b51372d536c866011af6f",
+      "confirmed_task": "Explore courses related to Psychology.",
+      "website": "https://www.coursera.org/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "a172a5d9ffaf5ef02bd550ec4fe24e6d",
+      "confirmed_task": "Browse the natural products database.",
+      "website": "https://www.drugs.com/",
+      "reference_length": 2,
+      "level": "easy"
+    },
+    {
+      "task_id": "b6d10e9bd19b4009a02dea0e98f4e1ae",
+      "confirmed_task": "Check the current standings for MLS on Fox Sports.",
+      "website": "https://www.foxsports.com/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "bb314cb80f0f8489135cbf59074d11e2",
+      "confirmed_task": "Open the page for the first Best Paper Award video recording of talks from ICLR 2016.",
+      "website": "https://iclr.cc/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "bb518416a786fdb9b9bbf0c78515595e",
+      "confirmed_task": "Browse the class schedule of graduate-level computer science courses.",
+      "website": "https://www.osu.edu/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "bf3b311cc8dce16d3de844f4b5875dfd",
+      "confirmed_task": "Compare Apple watches and  learn more about the ultra version on apple.",
+      "website": "https://www.apple.com/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "d5c34bf39eb6096ae5d439325cde4d32",
+      "confirmed_task": "Find a DMV center in Richmond.",
+      "website": "https://www.dmv.virginia.gov/",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "db1ffb5e60578597d1c3aa3c389ac7b1",
+      "confirmed_task": "Search for smart TVs with a screen size of 55 to 65 inches and filter the results to show only those that have an LED display.",
+      "website": "https://www.google.com/shopping?udm=28",
+      "reference_length": 5,
+      "level": "easy"
+    },
+    {
+      "task_id": "e24662008c3be5d56f986f232fcec447_070826",
+      "confirmed_task": "Find the stock price for TKO Group Holdings over the last month.",
+      "website": "https://www.google.com/finance/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "e7f6cca9a8875f98fee3b711ead3a444_110325",
+      "confirmed_task": "Find the posts liked by the user Taylor Swift on Tumblr.",
+      "website": "https://www.tumblr.com/",
+      "reference_length": 4,
+      "level": "easy"
+    },
+    {
+      "task_id": "f00e7accfb4a5e09680bdb326e6274ad",
+      "confirmed_task": "Check the hourly forecast for Boston.",
+      "website": "https://www.accuweather.com/",
+      "reference_length": 3,
+      "level": "easy"
+    },
+    {
+      "task_id": "0059adc6b12a3822305deb68929b2de8",
+      "confirmed_task": "Find support services jobs in Bentonville, in the state of Arkansas.",
+      "website": "https://careers.walmart.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "01abae9608f2d8752a83e08f136f720c",
+      "confirmed_task": "Show me the code for the company that is the top mover in the Cboe Europe Technology Sector Index (BEPTEC) as of the latest market close.",
+      "website": "https://www.cboe.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "046138801a05ddf56ad94e8672942496_070826",
+      "confirmed_task": "Find discussions of the community and open the one with the most replies of all time on Flightaware.",
+      "website": "https://www.flightaware.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "07ec4a12cba8090e2dc524d558ac7675",
+      "confirmed_task": "Check drug interaction for melatonin and Folate Forte.",
+      "website": "https://www.drugs.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "11857213ca01510f12813740afd59918_110325",
+      "confirmed_task": "Add the most top-selling Birkenstock's men clogs in brown, size 10-10.5 to my cart.",
+      "website": "https://www.birkenstock.com/",
+      "reference_length": 12,
+      "level": "medium"
+    },
+    {
+      "task_id": "11abb668c751dd56bb41f296a8bb3a13",
+      "confirmed_task": "Find a store near zip 30010 that provides authorized Apple services for imacs and make this one my store.",
+      "website": "https://www.bestbuy.com/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "239a29bde438fe44fe17fe1390ef1634",
+      "confirmed_task": "Find me a gluten-free diet to lose weight for a pregnant woman.",
+      "website": "https://www.healthline.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "2c20d87a046fadcb6ff07ee877bfbf37",
+      "confirmed_task": "Open the form 8843 for tax year 2022.",
+      "website": "https://www.irs.gov/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "2dd41b1d0e8f389d0683f4a4627abfe6",
+      "confirmed_task": "Show houses for sale in Maryland with a maximum price of $60,000.",
+      "website": "https://www.landwatch.com/",
+      "reference_length": 7,
+      "level": "medium"
+    },
+    {
+      "task_id": "301f267f421b93045874726183e8f722",
+      "confirmed_task": "Find healthy savory vegan snack recipes which can be cooked within 5 minutes and contain a high level of protein.",
+      "website": "https://www.healthline.com/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "4c186c6ed888d0c8d4cf4adb39443080",
+      "confirmed_task": "Find a medium Devin Booker jersey and add it to the shopping cart.",
+      "website": "https://www.nba.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "4e801ba102dfaf22c7cf7a126b107609",
+      "confirmed_task": "Find Linux platform software developers in 10080 who master the Python language and Java language with web interface project type.",
+      "website": "https://www.thumbtack.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "5916018d1cad999881018cac1216a692",
+      "confirmed_task": "Find a personal trainer service at 10040 for a 25-year-old client aiming to build muscle.",
+      "website": "https://www.thumbtack.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "5e4e89c9b6fdaee7a41aca5601b82e04",
+      "confirmed_task": "Identify a pill with a pink color and oval shape with 894 5 number on it.",
+      "website": "https://www.drugs.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "60cbbbd58eb9d28b053aef945f464228",
+      "confirmed_task": "Look up if the phone number 555555555 is a scam.",
+      "website": "https://www.bbb.org/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "63d6866fc000fcb1f153e07604bd1395",
+      "confirmed_task": "What are the Nearby Attractions from the most popular attraction in Hong Kong?",
+      "website": "https://us.trip.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "64345c365f544375357c7b67917f08a0_070826",
+      "confirmed_task": "Find me the most viewed refrigerator that is 33-36 inches wide, with stainless steel finish, and has a customer review rating of 4 stars or higher",
+      "website": "https://www.us-appliance.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "65c4030f22fb6eb101acfee4825f1318",
+      "confirmed_task": "Find a female MD Cardiologist in Jacksonville, Florida.",
+      "website": "https://www.mayoclinic.org/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "690d7b4a285fdb1e9dabf973bf46ae4d",
+      "confirmed_task": "Browse iPhone X for sale that is in good condition, has a max price of 400, and searches in titles only.",
+      "website": "https://craigslist.org/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "6b2cfae0ef25c73d1224b6ab74cb8b63",
+      "confirmed_task": "Find Devin Booker's highest-scoring points per game playoff run.",
+      "website": "https://www.nba.com/",
+      "reference_length": 7,
+      "level": "medium"
+    },
+    {
+      "task_id": "7072d09436972a5d5fe7476e3e9f1559",
+      "confirmed_task": "Show me the comparison of the first two personal credit cards that do not charge foreign transaction fees.",
+      "website": "https://www.americanexpress.com/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "733f1d8bf79d5bc2240c5357f928ffff",
+      "confirmed_task": "Find the cheapest travel deal or discount to Thailand that lasts more than 10 days, departs in next month, and show the total price.",
+      "website": "https://www.tourradar.com/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "753f372c189d3b306623cb0c65b50320",
+      "confirmed_task": "Compare the U.S. ETP Odd Lot Rate (%) between Quartile 1 and Quartile 4, viewing quartiles by price, and display the chart with a logarithmic scale on the vertical axis.",
+      "website": "https://www.sec.gov/",
+      "reference_length": 9,
+      "level": "medium"
+    },
+    {
+      "task_id": "78f397336b6fd1cbba0127db7a8cd502",
+      "confirmed_task": "Browse the upcoming SuperBike events taking place in Italy.",
+      "website": "https://www.redbull.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "7be8cd8dba885cddd9af5320f49bc41b",
+      "confirmed_task": "Find roofing contractors within 5 miles of zip code 10002.",
+      "website": "https://www.bbb.org/",
+      "reference_length": 9,
+      "level": "medium"
+    },
+    {
+      "task_id": "7e6993f2c5cd72c44809024f0bc85dc1",
+      "confirmed_task": "Create a meme with a frog as the background and leave the only text with \"Enjoy your life\".",
+      "website": "https://imgur.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "816851ff92ff0219acf4364dcc2c4692_070826",
+      "confirmed_task": "Show me a list of blue baby boys' pajamas under $40, with 5 star review sorted by lowest price.",
+      "website": "https://www.jcpenney.com/",
+      "reference_length": 9,
+      "level": "medium"
+    },
+    {
+      "task_id": "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+      "confirmed_task": "View the cheapest apartment available for students at New York University with bills that include WIFI and cleaning services.",
+      "website": "https://www.student.com/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "864244b6969e0f8733b0eb1ca06cd51f",
+      "confirmed_task": "Find the race time for who wins the first place in the last race of the 2023 Formula 1 (F1).",
+      "website": "https://www.espn.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "92a3d4236f167af4afdc08876a902ba6",
+      "confirmed_task": "Find a 2022 Tesla Model 3 on CarMax.",
+      "website": "https://www.carmax.com/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "9586827ad04ee2362f4f0076bf0f0468",
+      "confirmed_task": "Find the side effects of taking Montelukast.",
+      "website": "https://www.drugs.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "9c04b71bb8db6cf8e743b2290cbc8797",
+      "confirmed_task": "Find a UPS drop-off point near Miami Florida.",
+      "website": "https://www.ups.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "9d09bc948462db032bac98968b11b008",
+      "confirmed_task": "Find NHL events occurring in Boston.",
+      "website": "https://www.stubhub.com/",
+      "reference_length": 7,
+      "level": "medium"
+    },
+    {
+      "task_id": "b1ce968a361e1088ce8d2ade6c2c9af0",
+      "confirmed_task": "Find young cats in Seattle and show off the newest additions.",
+      "website": "https://www.petfinder.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "b320c68bffc1f3c7f2a8dc9d5478fb27",
+      "confirmed_task": "Find a walkthrough for the game \"The Legend of Zelda: Breath of the Wild\" on ign.",
+      "website": "https://www.ign.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "b7258ee05d75e6c50673a59914db412e_110325",
+      "confirmed_task": "Find the store location and hours of the closest Trader Joe's to zip code 90028 and set it as my home store.",
+      "website": "https://www.traderjoes.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "ba2a469af584f16da93ce6a7430cf7e5_070826",
+      "confirmed_task": "Search for a beginner’s course in computer science that includes python programming skills.",
+      "website": "https://www.coursera.org/",
+      "reference_length": 7,
+      "level": "medium"
+    },
+    {
+      "task_id": "be9e7dca1222714571ef3d7d59d2a41c",
+      "confirmed_task": "Find out the cold and flu forecast and today's air quality in Champaign, IL.",
+      "website": "https://weather.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "c698ff3fc0f6cbce39947c597ab5749b_121425",
+      "confirmed_task": "Help me find a list of school activity events in New York for this month.",
+      "website": "https://www.eventbrite.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "ce616721ce9aeda69890fbccb29677a6",
+      "confirmed_task": "Calculate the price to ship a large flat-rate box from 77449 to 77084 at the first available date and time.",
+      "website": "https://www.usps.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "d9a8689393effeed75ea0866e44e1def",
+      "confirmed_task": "Find the address and phone of the Office of the Inspector General (OIG).",
+      "website": "https://www.justice.gov/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "d9d8b7d84a3f8d057e368254fe8d65e2",
+      "confirmed_task": "Find the first commit submitted by NielsRogge to the official repository of the SAM2 model.",
+      "website": "https://github.com/",
+      "reference_length": 8,
+      "level": "medium"
+    },
+    {
+      "task_id": "e4e19e04286f644d747d8c5a79d17fac",
+      "confirmed_task": "Find the Drug Interaction Report for Viagra and alcohol.",
+      "website": "https://www.drugs.com/",
+      "reference_length": 6,
+      "level": "medium"
+    },
+    {
+      "task_id": "eb2db4b769c145dbe6ba4f74f3e0de98",
+      "confirmed_task": "Find an energetic hairless dog with medium barking.",
+      "website": "https://www.akc.org/",
+      "reference_length": 10,
+      "level": "medium"
+    },
+    {
+      "task_id": "f27b393bbd2082f92b566270c4b74fe6",
+      "confirmed_task": "Find a large van for sale from the year 2024 or newer with up to 10,000 miles.",
+      "website": "https://www.parkers.co.uk/",
+      "reference_length": 7,
+      "level": "medium"
+    },
+    {
+      "task_id": "0e5536aaad9d3462b06cf725e6ed535a",
+      "confirmed_task": "Show me the page with average wait times for U.S. citizens arriving at Raleigh-Durham International Airport on 2025-03-12.",
+      "website": "https://www.cbp.gov/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "1b867afecf072cb877ebfa4069263746",
+      "confirmed_task": "Display the figure comparing unemployment trends among women in Illinois and Michigan.",
+      "website": "https://www.americashealthrankings.org/",
+      "reference_length": 15,
+      "level": "hard"
+    },
+    {
+      "task_id": "1bc154377120ec15b18dbabdba49c741_051526",
+      "confirmed_task": "Book 4 tickets in the upper for any BTS show near New York in the next six months and view ticket prices with estimated fees.",
+      "website": "https://www.stubhub.com/",
+      "reference_length": 24,
+      "level": "hard"
+    },
+    {
+      "task_id": "1c3b747ae12ccee895745f82e3f2ef8a",
+      "confirmed_task": "Identify the ongoing competition that offers the highest prize and find the code that received the most votes in that competition.",
+      "website": "https://www.kaggle.com/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "33bd2cdcea4fcc42a09a8a1e4e5841c6_110325",
+      "confirmed_task": "Add a Box Combo to my bag with Diet Coke as the drink, and a Kids Combo with milk as the drink. Select the store closest to ZIP 10001 for pickup tomorrow at 12:00 PM.",
+      "website": "https://raisingcanes.com/",
+      "reference_length": 20,
+      "level": "hard"
+    },
+    {
+      "task_id": "3ef64f34eae59c9fac7ee9a4f18b4a0c",
+      "confirmed_task": "Find and open an animal learning course on YouTube Kids for my 6-year-old without login in. As a parent born in 1992, I would prefer not to enable search.",
+      "website": "https://www.youtube.com/",
+      "reference_length": 16,
+      "level": "hard"
+    },
+    {
+      "task_id": "59912927c1fddee6ded8a49986896bc2_070826",
+      "confirmed_task": "Look for the most useful reviews of the highest-rated anti-reflective TVs with screen sizes from 55in to 64in.",
+      "website": "https://www.samsung.com/",
+      "reference_length": 14,
+      "level": "hard"
+    },
+    {
+      "task_id": "71f8de1834599fba443f40dbbfab8edd",
+      "confirmed_task": "Search for papers related to reinforcement learning under the topics of computer science and mathematics on arxiv, with recent submission dates between September 2024 and January 2025.",
+      "website": "https://arxiv.org/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "7680a920359cb1a508fbddb001b98167",
+      "confirmed_task": "See the prediction about the girl child's height, whose current height at seven years is 4 feet and whose weight is 55 lbs, her mother is 5 feet 2, and her father is 5 feet 8.",
+      "website": "https://www.babycenter.com/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "7e1047f4803237f319c004f7a7f6bccb_121125",
+      "confirmed_task": "Discover the trade-in value of my Intel 10th generation i5, 2021, HP laptop in fair condition, which has 8 GB memory and can be powered on, proceed for the in-store trade-in.",
+      "website": "https://www.bestbuy.com/",
+      "reference_length": 13,
+      "level": "hard"
+    },
+    {
+      "task_id": "8244409b2c82043f966cad05f9afe132",
+      "confirmed_task": "Find the best Audiologist within 50 miles of New York, NY, with a rating of 4 and above.",
+      "website": "https://doctor.webmd.com/",
+      "reference_length": 13,
+      "level": "hard"
+    },
+    {
+      "task_id": "824eb7bb0ef1ce40bfd49c12182d9428_070826",
+      "confirmed_task": "Get the women's black swimsuit, size large, with the lowest price, and add it to my cart.",
+      "website": "https://us.speedo.com/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "8fdec8eeffd3491e6526cc78c028120b",
+      "confirmed_task": "See Nissan and Honda cars for sale near Kentwood, MI 49512 on CarMax.",
+      "website": "https://www.carmax.com/",
+      "reference_length": 12,
+      "level": "hard"
+    },
+    {
+      "task_id": "949dc965a6c23a95663b3bc2ca2c3a8a",
+      "confirmed_task": "Find UA or AA flights from London to New York that arrive between 8:00 PM and 11:00 PM on FlightAware.",
+      "website": "https://www.flightaware.com/",
+      "reference_length": 13,
+      "level": "hard"
+    },
+    {
+      "task_id": "a5c87cc1c94a090c9a8dc2c8b6a125d0",
+      "confirmed_task": "Find the SO2 air quality over the past hour for Maine North, County Cork, Ireland.",
+      "website": "https://www.accuweather.com/",
+      "reference_length": 15,
+      "level": "hard"
+    },
+    {
+      "task_id": "b3f8bd9198d9d157e0848109563c4b23",
+      "confirmed_task": "Find a permanent job in Logistics within 20 miles of New York, zip 11005, in the middle-income range for a high school diploma holder.",
+      "website": "https://ohiomeansjobs.ohio.gov/",
+      "reference_length": 15,
+      "level": "hard"
+    },
+    {
+      "task_id": "b7a9a6b5d451164c09bbd27b670bc2ae",
+      "confirmed_task": "Show me the list of Men's Blazers, Black, Size M on Uniqlo.",
+      "website": "https://www.uniqlo.com/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "c577a14301a725e09ccd269a3e0b271e_110325",
+      "confirmed_task": "Find the page for the highest critic-scored red or white wine, from Oregon, priced under $40, that pairs well with fish or dessert.",
+      "website": "https://www.wineaccess.com/",
+      "reference_length": 15,
+      "level": "hard"
+    },
+    {
+      "task_id": "c801d1c951f59297f526bab84fa86c6e",
+      "confirmed_task": "Browse the latest negative reviews from players with over 100 hours of playtime for the game that won the 2023 VR Game of the Year Award.",
+      "website": "https://store.steampowered.com/",
+      "reference_length": 11,
+      "level": "hard"
+    },
+    {
+      "task_id": "c8c1ff115879b3afd14280beb1559b13",
+      "confirmed_task": "Find the latest Doraemon video in MP4 format that is over 20 minutes long and has a medium file size.",
+      "website": "https://www.4shared.com/",
+      "reference_length": 12,
+      "level": "hard"
+    },
+    {
+      "task_id": "d1970c16271496cbbe166ecbecc0a1d8",
+      "confirmed_task": "I'm 25 and located in Texas. Shop for 2020 made dry red wine made in United States priced between 15-20 dollars and add 5 bottles to the cart.",
+      "website": "https://macyswineshop.com/",
+      "reference_length": 13,
+      "level": "hard"
+    },
+    {
+      "task_id": "dcd26e662a616d373ddd339747c6ce5b",
+      "confirmed_task": "Take a weight management quiz to find a motivating article for a non-exercising, mostly eating out and can't control portions and cravings, and who has a strong support system, enjoys traveling, loves family time and cooking.",
+      "website": "https://www.healthline.com/",
+      "reference_length": 22,
+      "level": "hard"
+    },
+    {
+      "task_id": "dd44c665cec1e9c929a4c5f074e7844a_110325",
+      "confirmed_task": "Find parking near the San Francisco Museum of Modern Art for next Sunday from 1:00 PM to 5:00 PM. I'm driving a Ford F-150 and need a garage that allows in-and-out privileges. If there are multiple options, show me the details of the one with the lowest price.",
+      "website": "https://spothero.com/",
+      "reference_length": 17,
+      "level": "hard"
+    },
+    {
+      "task_id": "ec78d3a635e417bc2a80d03ca93d7165",
+      "confirmed_task": "What are the benefits and financial support a single person living in England, over the state pension age, unemployed, with no health conditions, or caring for someone with one, can get?",
+      "website": "https://www.gov.uk/",
+      "reference_length": 16,
+      "level": "hard"
+    },
+    {
+      "task_id": "f2be37a9a60fbc25b6b11cf622d17352_110325",
+      "confirmed_task": "Find obedience trials in the state of New York in the next month.",
+      "website": "https://www.akc.org/",
+      "reference_length": 14,
+      "level": "hard"
+    },
+    {
+      "task_id": "f707d765bca668830745d20807d7bee6",
+      "confirmed_task": "Show me the list of young female English Spot rabbits available for adoption in Chicago, IL, within 50 miles.",
+      "website": "https://www.petfinder.com/",
+      "reference_length": 14,
+      "level": "hard"
+    }
+  ]
+}

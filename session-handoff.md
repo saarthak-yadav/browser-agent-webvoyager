@@ -21,21 +21,48 @@ Both are recorded in the seven 2026-07-30 checkpoint entries at the end of
 
 - **Goal:** An autonomous web agent evaluated honestly on ~100 Online-Mind2Web
   tasks, with every resume claim backed by a measurement.
-- **Current status:** feat-001, feat-002 and feat-003 all **done**. The Stage 2
-  checkpoint is **recorded** — benchmark changed, three scoring decisions taken,
-  evasion policy amended, feat-004 and feat-016 respecified. The harness
-  typechecks and has real tests. **feat-004 is not started on purpose** — the
-  checkpoint that blocked it is now closed, so it is the next thing to start.
-- **Branch / commit:** `main`, at `Stage 2 checkpoint: benchmark moves to
-  Online-Mind2Web, evasion rule narrowed` — docs only, no code. Working tree
-  clean. **Not pushed.**
+- **Current status:** feat-001 through **feat-004 all done**. The scored set
+  exists: `tasks/subset.json`, **100 tasks across 72 sites**, stratified on the
+  benchmark's `level` label, seed 20260730, reproducible byte for byte.
+  **47 tasks across 18 named sites are excluded as blocked**, and that count is
+  published with every pass rate. Rule: `docs/SUBSET-RULE.md`.
+- **Branch / commit:** `main`, at the feat-004 commit. Working tree clean.
+  **Not pushed.**
+- **Next:** feat-005 (Playwright driver and action space). Agent code can start —
+  the subset is fixed.
 
 ## Completed This Session
 
-- [x] **Stage 2 checkpoint recorded — documentation only, no code.** Benchmark
-      changed to Online-Mind2Web; blocked-task, locale and denominator decisions
-      taken; evasion policy amended; feat-004 and feat-016 respecified; the
-      feat-002-does-not-transfer flag raised and deliberately **not** acted on.
+- [x] **feat-004's two required decisions, taken and recorded.**
+      - **Audit scope: FULL SWEEP of every site in the pool, not a sample.** The
+        argument is not cost. The settled blocked-task rule excludes blocked tasks
+        *before* the run, which needs a per-site verdict for every site the draw
+        could touch; a sample gives a rate, which cannot tell the sampler which
+        tasks to drop, and would push every undiscovered block to run time where
+        the decision would then be made after seeing a failure. **Cost from
+        measured times: ~20-30 min unattended.**
+      - **Stratification axis: the benchmark's own `level` label. One axis.**
+        Published field, no judgement from us; difficulty is what confounds a pass
+        rate; ~27/48/25 gives feat-020 usable per-stratum n. **Gives up:** any
+        per-site or per-domain rate, even coverage across sites, and it inherits
+        the benchmark's site concentration. A per-site cap was **rejected** as a
+        second axis in disguise.
+- [x] **The first-action probe, built and validated against known answers.**
+      Ladder `headless-masked -> headless-stock -> headed`, generic selectors only,
+      one fixed query (`blue`) everywhere. Validated on four sites whose behaviour
+      feat-002/003 already recorded. It **reproduces the Google Search finding on
+      the live site** (200 landing page, then `/sorry/index` HTTP 429) and turned
+      up **one new result: Allrecipes 402s its search in all three rungs, headed
+      included**, on a site feat-002 scored headed-OK from a `goto`.
+- [x] **Building it found four defects that would have corrupted the sweep** — an
+      input-only selector ladder that could not reach Google's `textarea` search
+      box; a status race that reported Allrecipes' 402 as a served 200; a later
+      rung's timeout erasing two solid `blocked` observations; and a link-click
+      that never navigated scoring a site `ok`. All four found by real sites, all
+      four now pinned by tests.
+- [x] **Written selection rule: `docs/SUBSET-RULE.md`** — six numbered steps, the
+      reachability method, why `level`, what it gives up, and the reporting
+      contract. Written so a reader reproduces the subset without reading code.
 
 ### Earlier sessions
 
@@ -130,15 +157,18 @@ of this file.*
   local currency and local defaults. That residual is a **benchmark condition,
   not an agent failure**, and feat-019's taxonomy must be able to say so. Stated
   in the README, not engineered around.
-- [ ] **NEW, unowned: reachability of the Online-Mind2Web site pool.** feat-002
-  measured 15 sites; the new set has 136 and **none of its rates carry over**.
-  feat-004's first decision is how to scope that audit — sample or full sweep —
-  because a 136-site sweep at feat-002's per-site cost is a much bigger job.
-- [ ] **NEW, unmeasured, do not assume: what headless masking actually buys.**
-  Now that a UA override is permitted, the Allrecipes question feat-002 left open
-  (UA string vs missing GUI surface) is answerable, and it may reopen the
-  headed-vs-headless run decision — headless would make the benchmark run
-  materially cheaper. **Nobody has measured it.**
+- [~] **Reachability of the Online-Mind2Web site pool** — **owned by feat-004,
+  scoped, instrumented, validated, not yet run.** Full sweep, ~20-30 min. Blocked
+  only on the canonical task file.
+- [~] **What headless masking actually buys** — the sweep records the rung each
+  site passed at, so "masked-headless was enough for N sites where stock was not"
+  falls out of it. **Partial, not full attribution:** this design still cannot
+  separate the UA string from the missing GUI surface for a site that only passes
+  headed. That remains owed.
+- [ ] **The published site count and the measured one differ.** The dataset card
+  says 136 websites; the mirror's 300 tasks normalise to **145 distinct hosts**.
+  Whatever the canonical file says, **report the number measured from it**, and do
+  not repeat "136" as if this project had counted it.
 - [ ] **Error-recovery paths are the untested ones.** The single real bug
   typecheck found was in `check-reachability.ts`'s browser-relaunch path, which
   no run had executed because neither mode hit a browser-level failure. feat-015
@@ -153,26 +183,30 @@ of this file.*
 2. Read `feature_list.json` and `progress.md`.
 3. Review this handoff, especially the two changed rules at the top.
 4. Run `./init.sh` — expect a clean typecheck and `29 pass`.
-5. Start **feat-004**. Its inputs are settled; nothing is waiting on a human.
+5. Start **feat-005**. The subset is fixed and every feat-004 input is closed.
 
 ## Recommended Next Step
 
-feat-004 — select ~100 tasks stratified across **Online-Mind2Web**, and write the
-selection rule down. Its dependencies are closed and its inputs are now decided.
-Four things must go into it:
+~~feat-004~~ — **done.** Next is **feat-005**, the Playwright driver and the seven
+actions. What feat-004 delivered, for reference:
 
-1. **Fetch the Online-Mind2Web task set** (300 tasks, 136 sites) as a new
-   artifact. `tasks/WebVoyager_data.jsonl` stays in the repo as feat-002/003
-   evidence; it is no longer the working set.
-2. **Choose and justify a stratification axis.** "One per site" is arithmetically
-   impossible over 136 sites with ~100 tasks. Say what the axis is, why, and what
-   it gives up.
-3. **Scope a new reachability audit, and probe a completed first action** — not a
-   `goto`. Google Search passed a page-load probe and then blocked the query.
-   feat-002's numbers do not transfer; sample-vs-full-sweep is your call to make
-   and to write down.
-4. **Apply the settled rules:** blocked tasks excluded but counted in public,
-   `en-US` + fixed timezone with no proxying, both denominators each with its n.
+1. `tasks/Online_Mind2Web.json` — the canonical 300-task set, verified
+   byte-identical to the current HF revision (sha256 `7dedf381…`). The pool is
+   **145 distinct hosts**, not the 136 the dataset card advertises; report the
+   measured number.
+2. **Axis: the benchmark's `level` label**, one axis, no per-site cap. Reasoning
+   and the four things it gives up: `docs/SUBSET-RULE.md`.
+3. **Full sweep, not a sample** — 145 sites, completed-first-action probe.
+   `ok=93 blocked=18 degraded=4 no-action=30`. **6 of the 18 blocked sites load
+   fine and refuse the first action**, so a goto-only audit would have kept them.
+4. Settled rules applied: blocked excluded but published, `en-US` + fixed
+   timezone, both denominators owed at feat-018.
+
+**Open, and deliberately so:** decay of the *new* task set is unmeasured — the
+subset has been checked for reachability, never for whether each task is still
+answerable as written. And "what masking buys" is narrowed but unanswered,
+because the ladder stops on success and so never tries stock on a site that
+passed masked.
 
 Settled at the end of this session, so it does not come back as a question:
 `.cursor/rules/use-bun-instead-of-node-vite-npm-pnpm.mdc` arrived in commit

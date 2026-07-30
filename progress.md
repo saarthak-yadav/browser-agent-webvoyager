@@ -2,10 +2,15 @@
 
 ## Current State
 
-**Last Updated:** 2026-07-30 (Stage 2 checkpoint recorded — no code written)
-**Active Feature:** none — feat-001, feat-002 and feat-003 are **done**
-**Next Feature:** feat-004 (task subset selection), **respecified against
-Online-Mind2Web**. Its three blocking inputs are now decided.
+**Last Updated:** 2026-07-30 (feat-004 **done** — subset drawn, audit run, rule written)
+**Active Feature:** none. feat-001, feat-002, feat-003 and **feat-004** are done.
+**Next Feature:** feat-005 (Playwright driver and action space). Its only
+dependency, feat-002, is done.
+
+**The scored set now exists: `tasks/subset.json`, 100 tasks across 72 sites**,
+stratified on `level` (29 easy / 45 medium / 26 hard), seed 20260730, reproducible
+byte for byte. 47 tasks across 18 named sites are excluded as blocked and that
+count travels with every pass rate. Rule: `docs/SUBSET-RULE.md`.
 
 ## ⚠ Read this first: the benchmark changed on 2026-07-30
 
@@ -75,30 +80,21 @@ Full reasoning: the seven 2026-07-30 checkpoint entries at the end of
 
 ### What's In Progress
 
-- Nothing. feat-001, feat-002 and feat-003 are closed. feat-004 is **not
-  started, deliberately** — see below.
+- Nothing. feat-004 closed.
 
 ### What's Next
 
-1. **feat-004 — task subset selection, respecified.** Its three blocking inputs
-   are now **decided** (see Decisions Made below): blocked tasks excluded but
-   always counted in public; locale declared `en-US` + fixed timezone, no
-   proxying; both denominators reported, each with its n.
+1. **feat-005 — Playwright driver and the seven actions.** The subset is fixed, so
+   agent code can start. Read `docs/ARCHITECTURE.md` for the action space.
 
-   What it must now do, which is **not** what its old spec said:
-   - **~100 tasks stratified across Online-Mind2Web**, not "across all 15 sites".
-     136 sites and ~100 tasks makes per-site strata arithmetically impossible, so
-     feat-004 must **pick a stratification axis, write down why, and say what it
-     gives up**. Candidates: benchmark difficulty label, site domain/category,
-     task length.
-   - **Scope a fresh reachability audit.** feat-002's 15-site figures do not
-     transfer to 136. Sample or full sweep is feat-004's first decision, and a
-     136-site sweep at feat-002's per-site cost is a materially bigger job.
-   - **Probe a completed first action per site, not a `goto`.** This is the one
-     finding that does transfer: Google Search loaded and then refused its first
-     query.
-
-Still no agent code until feat-004 fixes the subset.
+**Before feat-015, read the three error-recovery entries in `docs/DECISIONS.md`.**
+feat-004 hit three recovery bugs in one feature, and **every one produced
+plausible output instead of a crash**: a shared browser with no relaunch guard
+(143 of 145 sites timed out against a dead Chromium and would have been recorded
+as unreachable), an unbounded `browser.close()` inside the recovery path itself,
+and a settle heuristic that read an empty SPA shell as a finished page and
+corrupted a *completed* sweep. feat-015 is mostly recovery code. Induce the
+failures; do not read the code and assume.
 
 ## Blockers / Risks
 

@@ -1,0 +1,1399 @@
+{
+  "feature": "feat-004",
+  "date": "2026-07-30",
+  "source": "tasks/Online_Mind2Web.json",
+  "totalTasks": 300,
+  "sitesProbed": 145,
+  "method": "One completed first action per site, not a goto. Escalation ladder headless-masked -> headless-stock -> headed, stopping at the first rung where an action completed; a site is blocked only if every rung refused it. Generic selectors only, query \"blue\" typed unchanged at every site. Locale en-US, timezone America/New_York, no proxying. Masking is the HeadlessChrome token and nothing else.",
+  "stockHeadlessUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+  "maskedUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.34 Safari/537.36",
+  "counts": {
+    "ok": 93,
+    "blocked": 18,
+    "degraded": 4,
+    "no-action": 30,
+    "error": 0
+  },
+  "tasksOnBlockedSites": 47,
+  "sitesNeedingEscalation": [
+    {
+      "site": "accuweather.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "airbnb.com",
+      "passedAt": "headless-stock"
+    },
+    {
+      "site": "amazon.jobs",
+      "passedAt": "headless-stock"
+    },
+    {
+      "site": "bestbuy.com",
+      "passedAt": "headless-stock"
+    },
+    {
+      "site": "carmax.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "dillards.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "disney.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "drugs.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "irs.gov",
+      "passedAt": "headed"
+    },
+    {
+      "site": "jcpenney.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "kbb.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "landwatch.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "nba.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "new.mta.info",
+      "passedAt": "headed"
+    },
+    {
+      "site": "qatarairways.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "sec.gov",
+      "passedAt": "headed"
+    },
+    {
+      "site": "ticketmaster.com",
+      "passedAt": "headed"
+    },
+    {
+      "site": "ups.com",
+      "passedAt": "headed"
+    }
+  ],
+  "sites": [
+    {
+      "site": "4shared.com",
+      "url": "https://www.4shared.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 755 chars of text, 82 interactive elements | search-submit: HTTP 200, 1256 chars of text, 191 interactive elements"
+    },
+    {
+      "site": "9gag.com",
+      "url": "https://9gag.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 926 chars of text, 95 interactive elements | link-click: HTTP 200, 1380 chars of text, 105 interactive elements"
+    },
+    {
+      "site": "accuweather.com",
+      "url": "https://www.accuweather.com/",
+      "taskCount": 6,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 4631 chars of text, 193 interactive elements | search-submit: HTTP 200, 1232 chars of text, 127 interactive elements"
+    },
+    {
+      "site": "adoptapet.com",
+      "url": "https://www.adoptapet.com/",
+      "taskCount": 9,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: request blocked (HTTP 403)"
+    },
+    {
+      "site": "airbnb.com",
+      "url": "https://www.airbnb.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-stock",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-stock: load: HTTP 200, 1346 chars of text, 173 interactive elements | search-submit: HTTP 200, 1943 chars of text, 266 interactive elements"
+    },
+    {
+      "site": "akc.org",
+      "url": "https://www.akc.org/",
+      "taskCount": 5,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 10800 chars of text, 386 interactive elements | search-submit: HTTP 200, 6964 chars of text, 333 interactive elements"
+    },
+    {
+      "site": "allrecipes.com",
+      "url": "https://www.allrecipes.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 200, 5857 chars of text, 359 interactive elements | search-submit: HTTP 402 on the main document"
+    },
+    {
+      "site": "amazon.com",
+      "url": "https://www.amazon.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 202, 5351 chars of text, 382 interactive elements | search-submit: HTTP 200, 10305 chars of text, 438 interactive elements"
+    },
+    {
+      "site": "amazon.jobs",
+      "url": "https://www.amazon.jobs/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-stock",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-stock: load: HTTP 200, 2614 chars of text, 95 interactive elements | search-submit: HTTP 200, 20014 chars of text, 1439 interactive elements"
+    },
+    {
+      "site": "americanexpress.com",
+      "url": "https://www.americanexpress.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 1647 chars of text, 419 interactive elements | no generic first action available"
+    },
+    {
+      "site": "americashealthrankings.org",
+      "url": "https://www.americashealthrankings.org/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4155 chars of text, 83 interactive elements | search-submit: HTTP 200, 474 chars of text, 52 interactive elements"
+    },
+    {
+      "site": "amtrak.com",
+      "url": "https://www.amtrak.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 3344 chars of text, 310 interactive elements | no generic first action available"
+    },
+    {
+      "site": "apartments.com",
+      "url": "https://www.apartments.com/",
+      "taskCount": 8,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: access denied, permission to access (HTTP 200)"
+    },
+    {
+      "site": "apple.com",
+      "url": "https://www.apple.com/",
+      "taskCount": 4,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 6239 chars of text, 379 interactive elements | link-click: HTTP 200, 5402 chars of text, 330 interactive elements"
+    },
+    {
+      "site": "arxiv.org",
+      "url": "https://arxiv.org/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5633 chars of text, 265 interactive elements | search-submit: HTTP 200, 37591 chars of text, 578 interactive elements"
+    },
+    {
+      "site": "azure.microsoft.com",
+      "url": "https://azure.microsoft.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 6612 chars of text, 455 interactive elements | search-submit: HTTP 200, 7086 chars of text, 461 interactive elements"
+    },
+    {
+      "site": "babycenter.com",
+      "url": "https://www.babycenter.com/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2885 chars of text, 653 interactive elements | search-submit: HTTP 200, 3123 chars of text, 272 interactive elements"
+    },
+    {
+      "site": "backcountry.com",
+      "url": "https://www.backcountry.com/",
+      "taskCount": 1,
+      "verdict": "degraded",
+      "passedAt": null,
+      "action": null,
+      "detail": "degraded at every rung through headless-stock: load: HTTP 404 but near-empty page: 0 chars of text, 0 interactive elements (1 later rung(s) errored and were not treated as evidence)"
+    },
+    {
+      "site": "bandcamp.com",
+      "url": "https://bandcamp.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 200, 10683 chars of text, 250 interactive elements | search-submit: interstitial phrases: captcha (HTTP 200)"
+    },
+    {
+      "site": "bbb.org",
+      "url": "https://www.bbb.org/",
+      "taskCount": 6,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 1512 chars of text, 124 interactive elements | no generic first action available"
+    },
+    {
+      "site": "berkeley.edu",
+      "url": "https://www.berkeley.edu/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 3963 chars of text, 122 interactive elements | search-submit: HTTP 200, 3653 chars of text, 132 interactive elements"
+    },
+    {
+      "site": "bestbuy.com",
+      "url": "https://www.bestbuy.com/",
+      "taskCount": 11,
+      "verdict": "ok",
+      "passedAt": "headless-stock",
+      "action": "link-click",
+      "detail": "link-click completed at headless-stock: load: HTTP 200, 223 chars of text, 12 interactive elements | link-click: HTTP 200, 3520 chars of text, 89 interactive elements"
+    },
+    {
+      "site": "bhphotovideo.com",
+      "url": "https://www.bhphotovideo.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 200, 1752 chars of text, 98 interactive elements | search-submit: interstitial phrases: just a moment (HTTP 403)"
+    },
+    {
+      "site": "birkenstock.com",
+      "url": "https://www.birkenstock.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 4760 chars of text, 561 interactive elements | no generic first action available"
+    },
+    {
+      "site": "boardgamegeek.com",
+      "url": "https://boardgamegeek.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: just a moment (HTTP 403)"
+    },
+    {
+      "site": "booking.com",
+      "url": "https://www.booking.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 202, 4685 chars of text, 304 interactive elements | no generic first action available"
+    },
+    {
+      "site": "ca.gov",
+      "url": "https://www.ca.gov/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2447 chars of text, 68 interactive elements | search-submit: HTTP 200, 5463 chars of text, 87 interactive elements"
+    },
+    {
+      "site": "careers.walmart.com",
+      "url": "https://careers.walmart.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 3264 chars of text, 84 interactive elements | search-submit: HTTP 200, 4206 chars of text, 101 interactive elements"
+    },
+    {
+      "site": "carmax.com",
+      "url": "https://www.carmax.com/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 3991 chars of text, 295 interactive elements | search-submit: HTTP 200, 11773 chars of text, 495 interactive elements"
+    },
+    {
+      "site": "carnival.com",
+      "url": "https://www.carnival.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 6027 chars of text, 165 interactive elements | no generic first action available"
+    },
+    {
+      "site": "cars.com",
+      "url": "https://www.cars.com/",
+      "taskCount": 7,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: just a moment (HTTP 403)"
+    },
+    {
+      "site": "carvana.com",
+      "url": "https://www.carvana.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 200, 3910 chars of text, 178 interactive elements | search-submit: interstitial phrases: just a moment (HTTP 403)"
+    },
+    {
+      "site": "cboe.com",
+      "url": "https://www.cboe.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 4025 chars of text, 200 interactive elements | no generic first action available"
+    },
+    {
+      "site": "cbp.gov",
+      "url": "https://www.cbp.gov/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 1386 chars of text, 231 interactive elements | search-submit: HTTP 200, 3537 chars of text, 248 interactive elements"
+    },
+    {
+      "site": "chase.com",
+      "url": "https://www.chase.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 5443 chars of text, 186 interactive elements | link-click: HTTP 200, 6942 chars of text, 134 interactive elements"
+    },
+    {
+      "site": "chess.com",
+      "url": "https://www.chess.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 962 chars of text, 55 interactive elements | link-click: HTTP 200, 484 chars of text, 35 interactive elements"
+    },
+    {
+      "site": "coinmarketcap.com",
+      "url": "https://coinmarketcap.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 5647 chars of text, 363 interactive elements | no generic first action available"
+    },
+    {
+      "site": "compass.com",
+      "url": "https://www.compass.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 5763 chars of text, 178 interactive elements | link-click: HTTP 200, 11411 chars of text, 377 interactive elements"
+    },
+    {
+      "site": "cookpad.com",
+      "url": "https://cookpad.com/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 1430 chars of text, 93 interactive elements | search-submit: HTTP 200, 6998 chars of text, 372 interactive elements"
+    },
+    {
+      "site": "coolmath4kids.com",
+      "url": "https://www.coolmath4kids.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 1293 chars of text, 71 interactive elements | link-click: HTTP 200, 1078 chars of text, 82 interactive elements"
+    },
+    {
+      "site": "coursera.org",
+      "url": "https://www.coursera.org/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 6689 chars of text, 280 interactive elements | search-submit: HTTP 200, 7860 chars of text, 187 interactive elements"
+    },
+    {
+      "site": "craigslist.org",
+      "url": "https://craigslist.org/",
+      "taskCount": 4,
+      "verdict": "degraded",
+      "passedAt": null,
+      "action": null,
+      "detail": "degraded at every rung through headed: load: HTTP 200, 2566 chars of text, 363 interactive elements | link-click: HTTP 200 but near-empty page: 0 chars of text, 7 interactive elements"
+    },
+    {
+      "site": "cvs.com",
+      "url": "https://www.cvs.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: access denied, permission to access (HTTP 403)"
+    },
+    {
+      "site": "dblp.org",
+      "url": "https://dblp.org/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 3800 chars of text, 327 interactive elements | search-submit: HTTP 200, 2206 chars of text, 1153 interactive elements"
+    },
+    {
+      "site": "dillards.com",
+      "url": "https://www.dillards.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 9376 chars of text, 325 interactive elements | search-submit: HTTP 200, 43443 chars of text, 2621 interactive elements"
+    },
+    {
+      "site": "discogs.com",
+      "url": "https://www.discogs.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 200, 5593 chars of text, 164 interactive elements | search-submit: interstitial phrases: just a moment (HTTP 403)"
+    },
+    {
+      "site": "disney.com",
+      "url": "https://www.disney.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "link-click",
+      "detail": "link-click completed at headed: load: HTTP 200, 1526 chars of text, 119 interactive elements | link-click: HTTP 200, 1454 chars of text, 59 interactive elements"
+    },
+    {
+      "site": "dmv.virginia.gov",
+      "url": "https://www.dmv.virginia.gov/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4013 chars of text, 247 interactive elements | search-submit: HTTP 200, 3340 chars of text, 223 interactive elements"
+    },
+    {
+      "site": "doctor.webmd.com",
+      "url": "https://doctor.webmd.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2561 chars of text, 305 interactive elements | search-submit: HTTP 200, 981 chars of text, 154 interactive elements"
+    },
+    {
+      "site": "drugs.com",
+      "url": "https://www.drugs.com/",
+      "taskCount": 8,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 10958 chars of text, 356 interactive elements | search-submit: HTTP 200, 6120 chars of text, 132 interactive elements"
+    },
+    {
+      "site": "espn.com",
+      "url": "https://www.espn.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5456 chars of text, 335 interactive elements | search-submit: HTTP 200, 5463 chars of text, 340 interactive elements"
+    },
+    {
+      "site": "eventbrite.com",
+      "url": "https://www.eventbrite.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5625 chars of text, 298 interactive elements | search-submit: HTTP 200, 2675 chars of text, 206 interactive elements"
+    },
+    {
+      "site": "fandom.com",
+      "url": "https://www.fandom.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4295 chars of text, 314 interactive elements | search-submit: HTTP 200, 5871 chars of text, 406 interactive elements"
+    },
+    {
+      "site": "fedex.com",
+      "url": "https://www.fedex.com/en-us/home.html",
+      "taskCount": 4,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 328 chars of text, 0 interactive elements | no generic first action available"
+    },
+    {
+      "site": "finance.yahoo.com",
+      "url": "https://finance.yahoo.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5031 chars of text, 445 interactive elements | search-submit: HTTP 200, 5872 chars of text, 471 interactive elements"
+    },
+    {
+      "site": "flightaware.com",
+      "url": "https://www.flightaware.com/",
+      "taskCount": 3,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 2127 chars of text, 145 interactive elements | no generic first action available"
+    },
+    {
+      "site": "foxsports.com",
+      "url": "https://www.foxsports.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 9277 chars of text, 323 interactive elements | search-submit: HTTP 200, 9277 chars of text, 323 interactive elements"
+    },
+    {
+      "site": "github.com",
+      "url": "https://github.com/",
+      "taskCount": 2,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 5893 chars of text, 205 interactive elements | no generic first action available"
+    },
+    {
+      "site": "google.com",
+      "url": "https://www.google.com/maps/",
+      "taskCount": 9,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 284 chars of text, 49 interactive elements | search-submit: HTTP 200, 1425 chars of text, 66 interactive elements"
+    },
+    {
+      "site": "gov.uk",
+      "url": "https://www.gov.uk/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4011 chars of text, 129 interactive elements | search-submit: HTTP 200, 2925 chars of text, 118 interactive elements"
+    },
+    {
+      "site": "healthgrades.com",
+      "url": "https://www.healthgrades.com/",
+      "taskCount": 6,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 403 on the main document"
+    },
+    {
+      "site": "healthline.com",
+      "url": "https://www.healthline.com/",
+      "taskCount": 6,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 3739 chars of text, 212 interactive elements | no generic first action available"
+    },
+    {
+      "site": "iclr.cc",
+      "url": "https://iclr.cc/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4769 chars of text, 109 interactive elements | search-submit: HTTP 200, 3204 chars of text, 70 interactive elements"
+    },
+    {
+      "site": "ign.com",
+      "url": "https://www.ign.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 18125 chars of text, 356 interactive elements | link-click: HTTP 200, 4577 chars of text, 230 interactive elements"
+    },
+    {
+      "site": "ikea.com",
+      "url": "https://www.ikea.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 6654 chars of text, 192 interactive elements | search-submit: HTTP 200, 6654 chars of text, 192 interactive elements"
+    },
+    {
+      "site": "imdb.com",
+      "url": "https://www.imdb.com/",
+      "taskCount": 2,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: security check (HTTP 202)"
+    },
+    {
+      "site": "imgur.com",
+      "url": "https://imgur.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 768 chars of text, 58 interactive elements | search-submit: HTTP 200, 901 chars of text, 67 interactive elements"
+    },
+    {
+      "site": "instructure.com",
+      "url": "https://www.instructure.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 10754 chars of text, 263 interactive elements | no generic first action available"
+    },
+    {
+      "site": "irs.gov",
+      "url": "https://www.irs.gov/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 2854 chars of text, 338 interactive elements | search-submit: HTTP 200, 4964 chars of text, 283 interactive elements"
+    },
+    {
+      "site": "jcpenney.com",
+      "url": "https://www.jcpenney.com/",
+      "taskCount": 4,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 8731 chars of text, 430 interactive elements | search-submit: HTTP 200, 6748 chars of text, 743 interactive elements"
+    },
+    {
+      "site": "jobs.chronicle.com",
+      "url": "https://jobs.chronicle.com",
+      "taskCount": 1,
+      "verdict": "degraded",
+      "passedAt": null,
+      "action": null,
+      "detail": "degraded at every rung through headed: load: HTTP 200, 3266 chars of text, 211 interactive elements | link-click: HTTP 200 but near-empty page: 109 chars of text, 7 interactive elements"
+    },
+    {
+      "site": "justice.gov",
+      "url": "https://www.justice.gov/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 9223 chars of text, 125 interactive elements | search-submit: HTTP 200, 10596 chars of text, 90 interactive elements"
+    },
+    {
+      "site": "kaggle.com",
+      "url": "https://www.kaggle.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 7884 chars of text, 126 interactive elements | search-submit: HTTP 200, 4505 chars of text, 104 interactive elements"
+    },
+    {
+      "site": "kbb.com",
+      "url": "https://www.kbb.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "link-click",
+      "detail": "link-click completed at headed: load: HTTP 200, 9165 chars of text, 338 interactive elements | link-click: HTTP 200, 7423 chars of text, 370 interactive elements"
+    },
+    {
+      "site": "landwatch.com",
+      "url": "https://www.landwatch.com/",
+      "taskCount": 4,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "link-click",
+      "detail": "link-click completed at headed: load: HTTP 200, 1999 chars of text, 227 interactive elements | link-click: HTTP 200, 13923 chars of text, 694 interactive elements"
+    },
+    {
+      "site": "leagueoflegends.com",
+      "url": "https://www.leagueoflegends.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2009 chars of text, 79 interactive elements | search-submit: HTTP 200, 1620 chars of text, 56 interactive elements"
+    },
+    {
+      "site": "macyswineshop.com",
+      "url": "https://macyswineshop.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4356 chars of text, 477 interactive elements | search-submit: HTTP 200, 2217 chars of text, 330 interactive elements"
+    },
+    {
+      "site": "marriott.com",
+      "url": "https://www.marriott.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: access denied, permission to access (HTTP 200)"
+    },
+    {
+      "site": "mayoclinic.org",
+      "url": "https://www.mayoclinic.org/",
+      "taskCount": 5,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headed: load: HTTP 200, 2948 chars of text, 195 interactive elements | no generic first action available"
+    },
+    {
+      "site": "medicare.gov",
+      "url": "https://medicare.gov",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2558 chars of text, 81 interactive elements | search-submit: HTTP 200, 3536 chars of text, 93 interactive elements"
+    },
+    {
+      "site": "mega.io",
+      "url": "https://mega.io/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 5486 chars of text, 200 interactive elements | link-click: HTTP 200, 5251 chars of text, 191 interactive elements"
+    },
+    {
+      "site": "merriam-webster.com",
+      "url": "https://www.merriam-webster.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 3573 chars of text, 239 interactive elements | search-submit: HTTP 200, 8180 chars of text, 297 interactive elements"
+    },
+    {
+      "site": "michaels.com",
+      "url": "https://www.michaels.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 38074 chars of text, 1675 interactive elements | no generic first action available"
+    },
+    {
+      "site": "microcenter.com",
+      "url": "https://www.microcenter.com/",
+      "taskCount": 2,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: just a moment (HTTP 403)"
+    },
+    {
+      "site": "nba.com",
+      "url": "https://www.nba.com/",
+      "taskCount": 4,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "link-click",
+      "detail": "link-click completed at headed: load: HTTP 200, 8667 chars of text, 450 interactive elements | link-click: HTTP 200, 2962 chars of text, 283 interactive elements"
+    },
+    {
+      "site": "new.mta.info",
+      "url": "https://new.mta.info/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 2698 chars of text, 115 interactive elements | search-submit: HTTP 200, 3001 chars of text, 164 interactive elements"
+    },
+    {
+      "site": "nfl.com",
+      "url": "https://www.nfl.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 5241 chars of text, 341 interactive elements | no generic first action available"
+    },
+    {
+      "site": "nvidia.com",
+      "url": "https://www.nvidia.com/",
+      "taskCount": 2,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 18930 chars of text, 727 interactive elements | no generic first action available"
+    },
+    {
+      "site": "nyse.com",
+      "url": "https://www.nyse.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 5585 chars of text, 76 interactive elements | no generic first action available"
+    },
+    {
+      "site": "ohio.gov",
+      "url": "https://ohio.gov/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 2489 chars of text, 84 interactive elements | link-click: HTTP 200, 2489 chars of text, 84 interactive elements"
+    },
+    {
+      "site": "ohiomeansjobs.ohio.gov",
+      "url": "https://ohiomeansjobs.ohio.gov/",
+      "taskCount": 3,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 2609 chars of text, 271 interactive elements | probe error: press: Timeout 5000ms exceeded."
+    },
+    {
+      "site": "osu.edu",
+      "url": "https://www.osu.edu/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5370 chars of text, 255 interactive elements | search-submit: HTTP 200, 4039 chars of text, 187 interactive elements"
+    },
+    {
+      "site": "parkers.co.uk",
+      "url": "https://www.parkers.co.uk/",
+      "taskCount": 2,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 6262 chars of text, 360 interactive elements | no generic first action available"
+    },
+    {
+      "site": "petfinder.com",
+      "url": "https://www.petfinder.com/",
+      "taskCount": 4,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headed: load: HTTP 200, 2312 chars of text, 149 interactive elements | no generic first action available"
+    },
+    {
+      "site": "phet.colorado.edu",
+      "url": "https://phet.colorado.edu/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2208 chars of text, 133 interactive elements | search-submit: HTTP 200, 1610 chars of text, 137 interactive elements"
+    },
+    {
+      "site": "phys.org",
+      "url": "https://phys.org/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 403 on the main document"
+    },
+    {
+      "site": "porsche.com",
+      "url": "https://www.porsche.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 875 chars of text, 7 interactive elements | link-click: HTTP 200, 148 chars of text, 113 interactive elements"
+    },
+    {
+      "site": "publicstorage.com",
+      "url": "https://www.publicstorage.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 6088 chars of text, 226 interactive elements | link-click: HTTP 200, 5384 chars of text, 259 interactive elements"
+    },
+    {
+      "site": "qatarairways.com",
+      "url": "https://www.qatarairways.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 496 chars of text, 887 interactive elements | search-submit: HTTP 200, 2853 chars of text, 914 interactive elements"
+    },
+    {
+      "site": "raisingcanes.com",
+      "url": "https://raisingcanes.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 4674 chars of text, 169 interactive elements | link-click: HTTP 200, 3513 chars of text, 143 interactive elements"
+    },
+    {
+      "site": "recreation.gov",
+      "url": "https://www.recreation.gov/",
+      "taskCount": 8,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 17785 chars of text, 600 interactive elements | search-submit: HTTP 200, 11501 chars of text, 583 interactive elements"
+    },
+    {
+      "site": "redbull.com",
+      "url": "https://www.redbull.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 491 chars of text, 62 interactive elements | link-click: HTTP 200, 2814 chars of text, 74 interactive elements"
+    },
+    {
+      "site": "remax.com",
+      "url": "https://www.remax.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: captcha (HTTP 202)"
+    },
+    {
+      "site": "rottentomatoes.com",
+      "url": "https://www.rottentomatoes.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 7682 chars of text, 434 interactive elements | search-submit: HTTP 200, 7682 chars of text, 434 interactive elements"
+    },
+    {
+      "site": "ryanair.com",
+      "url": "https://www.ryanair.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 3275 chars of text, 126 interactive elements | no generic first action available"
+    },
+    {
+      "site": "samsung.com",
+      "url": "https://www.samsung.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 41975 chars of text, 1348 interactive elements | search-submit: HTTP 200, 38546 chars of text, 865 interactive elements"
+    },
+    {
+      "site": "sec.gov",
+      "url": "https://www.sec.gov/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 2774 chars of text, 140 interactive elements | search-submit: HTTP 200, 8509 chars of text, 42 interactive elements"
+    },
+    {
+      "site": "smartasset.com",
+      "url": "https://smartasset.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4351 chars of text, 189 interactive elements | search-submit: HTTP 200, 8864 chars of text, 195 interactive elements"
+    },
+    {
+      "site": "soundcloud.com",
+      "url": "https://soundcloud.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2923 chars of text, 213 interactive elements | search-submit: HTTP 200, 2512 chars of text, 278 interactive elements"
+    },
+    {
+      "site": "sourceforge.net",
+      "url": "https://sourceforge.net/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 10274 chars of text, 171 interactive elements | search-submit: HTTP 200, 10570 chars of text, 187 interactive elements"
+    },
+    {
+      "site": "spothero.com",
+      "url": "https://spothero.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2379 chars of text, 61 interactive elements | search-submit: HTTP 200, 2379 chars of text, 72 interactive elements"
+    },
+    {
+      "site": "stanford.edu",
+      "url": "https://www.stanford.edu/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 8226 chars of text, 187 interactive elements | search-submit: HTTP 200, 3552 chars of text, 358 interactive elements"
+    },
+    {
+      "site": "statista.com",
+      "url": "https://www.statista.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 9962 chars of text, 514 interactive elements | search-submit: HTTP 200, 4754 chars of text, 424 interactive elements"
+    },
+    {
+      "site": "store.steampowered.com",
+      "url": "https://store.steampowered.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4728 chars of text, 278 interactive elements | search-submit: HTTP 200, 3029 chars of text, 848 interactive elements"
+    },
+    {
+      "site": "stubhub.com",
+      "url": "https://www.stubhub.com/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 1858 chars of text, 76 interactive elements | link-click: HTTP 200, 1383 chars of text, 36 interactive elements"
+    },
+    {
+      "site": "student.com",
+      "url": "https://www.student.com/",
+      "taskCount": 3,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5654 chars of text, 175 interactive elements | search-submit: HTTP 200, 11769 chars of text, 169 interactive elements"
+    },
+    {
+      "site": "superlawyers.com",
+      "url": "https://superlawyers.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4034 chars of text, 194 interactive elements | search-submit: HTTP 200, 4034 chars of text, 194 interactive elements"
+    },
+    {
+      "site": "target.com",
+      "url": "https://www.target.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2290 chars of text, 91 interactive elements | search-submit: HTTP 200, 5708 chars of text, 234 interactive elements"
+    },
+    {
+      "site": "ted.com",
+      "url": "https://www.ted.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 9407 chars of text, 327 interactive elements | no generic first action available"
+    },
+    {
+      "site": "theweathernetwork.com",
+      "url": "https://www.theweathernetwork.com/",
+      "taskCount": 4,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4371 chars of text, 194 interactive elements | search-submit: HTTP 200, 6219 chars of text, 259 interactive elements"
+    },
+    {
+      "site": "thumbtack.com",
+      "url": "https://www.thumbtack.com/",
+      "taskCount": 5,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 202, 826 chars of text, 56 interactive elements | link-click: HTTP 200, 826 chars of text, 56 interactive elements"
+    },
+    {
+      "site": "ticketmaster.com",
+      "url": "https://ticketmaster.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 8240 chars of text, 231 interactive elements | search-submit: HTTP 200, 8724 chars of text, 212 interactive elements"
+    },
+    {
+      "site": "tourradar.com",
+      "url": "https://www.tourradar.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 9023 chars of text, 378 interactive elements | no generic first action available"
+    },
+    {
+      "site": "traderjoes.com",
+      "url": "https://www.traderjoes.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headed: load: HTTP 200, 21588 chars of text, 194 interactive elements | no generic first action available"
+    },
+    {
+      "site": "tumblr.com",
+      "url": "https://www.tumblr.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 5963 chars of text, 378 interactive elements | search-submit: HTTP 200, 4526 chars of text, 445 interactive elements"
+    },
+    {
+      "site": "umich.edu",
+      "url": "https://umich.edu/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4662 chars of text, 82 interactive elements | search-submit: HTTP 200, 2965 chars of text, 74 interactive elements"
+    },
+    {
+      "site": "uniqlo.com",
+      "url": "https://www.uniqlo.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 1991 chars of text, 346 interactive elements | search-submit: HTTP 200, 5245 chars of text, 697 interactive elements"
+    },
+    {
+      "site": "united.com",
+      "url": "https://www.united.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headed: load: HTTP 200, 1427 chars of text, 131 interactive elements | no generic first action available (2 later rung(s) errored and were not treated as evidence)"
+    },
+    {
+      "site": "ups.com",
+      "url": "https://www.ups.com/",
+      "taskCount": 5,
+      "verdict": "ok",
+      "passedAt": "headed",
+      "action": "search-submit",
+      "detail": "search-submit completed at headed: load: HTTP 200, 3478 chars of text, 235 interactive elements | search-submit: HTTP 200, 1842 chars of text, 211 interactive elements"
+    },
+    {
+      "site": "us-appliance.com",
+      "url": "https://www.us-appliance.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 4903 chars of text, 257 interactive elements | search-submit: HTTP 200, 6968 chars of text, 342 interactive elements"
+    },
+    {
+      "site": "us.megabus.com",
+      "url": "https://us.megabus.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 989 chars of text, 82 interactive elements | link-click: HTTP 200, 964 chars of text, 82 interactive elements"
+    },
+    {
+      "site": "us.speedo.com",
+      "url": "https://us.speedo.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 2835 chars of text, 569 interactive elements | no generic first action available"
+    },
+    {
+      "site": "us.trip.com",
+      "url": "https://us.trip.com/",
+      "taskCount": 2,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 1276 chars of text, 75 interactive elements | no generic first action available"
+    },
+    {
+      "site": "uscis.gov",
+      "url": "https://www.uscis.gov/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 3532 chars of text, 224 interactive elements | search-submit: HTTP 200, 3721 chars of text, 196 interactive elements"
+    },
+    {
+      "site": "usps.com",
+      "url": "https://www.usps.com/",
+      "taskCount": 2,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 6603 chars of text, 248 interactive elements | search-submit: HTTP 200, 7398 chars of text, 268 interactive elements"
+    },
+    {
+      "site": "verizon.com",
+      "url": "https://www.verizon.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 2442 chars of text, 250 interactive elements | link-click: HTTP 200, 3267 chars of text, 113 interactive elements"
+    },
+    {
+      "site": "versus.com",
+      "url": "https://versus.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 2781 chars of text, 80 interactive elements | search-submit: HTTP 200, 1477 chars of text, 49 interactive elements"
+    },
+    {
+      "site": "wanderlog.com",
+      "url": "https://wanderlog.com/",
+      "taskCount": 1,
+      "verdict": "degraded",
+      "passedAt": null,
+      "action": null,
+      "detail": "degraded at every rung through headed: load: HTTP 200, 21872 chars of text, 272 interactive elements | link-click: HTTP 200 but near-empty page: 173 chars of text, 9 interactive elements (1 later rung(s) errored and were not treated as evidence)"
+    },
+    {
+      "site": "weather.com",
+      "url": "https://weather.com/",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headless-masked: load: HTTP 200, 3949 chars of text, 147 interactive elements | no generic first action available"
+    },
+    {
+      "site": "webmd.com",
+      "url": "https://www.webmd.com/",
+      "taskCount": 2,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: interstitial phrases: captcha (HTTP 200)"
+    },
+    {
+      "site": "wineaccess.com",
+      "url": "https://www.wineaccess.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 8969 chars of text, 360 interactive elements | search-submit: HTTP 200, 12664 chars of text, 704 interactive elements"
+    },
+    {
+      "site": "ycombinator.com",
+      "url": "https://www.ycombinator.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "link-click",
+      "detail": "link-click completed at headless-masked: load: HTTP 200, 7260 chars of text, 125 interactive elements | link-click: HTTP 200, 8064 chars of text, 62 interactive elements"
+    },
+    {
+      "site": "youtube.com",
+      "url": "https://www.youtube.com/",
+      "taskCount": 1,
+      "verdict": "ok",
+      "passedAt": "headless-masked",
+      "action": "search-submit",
+      "detail": "search-submit completed at headless-masked: load: HTTP 200, 154 chars of text, 68 interactive elements | search-submit: HTTP 200, 7249 chars of text, 305 interactive elements"
+    },
+    {
+      "site": "zara.com",
+      "url": "https://zara.com/us",
+      "taskCount": 1,
+      "verdict": "no-action",
+      "passedAt": null,
+      "action": null,
+      "detail": "no-action at every rung through headed: load: HTTP 200, 2299 chars of text, 1626 interactive elements | no generic first action available"
+    },
+    {
+      "site": "ziprecruiter.com",
+      "url": "https://ziprecruiter.com/",
+      "taskCount": 1,
+      "verdict": "blocked",
+      "passedAt": null,
+      "action": null,
+      "detail": "blocked at every rung through headed: load: HTTP 200, 1113 chars of text, 45 interactive elements | search-submit: interstitial phrases: just a moment (HTTP 403)"
+    }
+  ]
+}
