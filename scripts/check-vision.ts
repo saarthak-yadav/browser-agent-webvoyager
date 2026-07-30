@@ -23,7 +23,13 @@ const TRUTH = {
   bottomRight: "blue",
 } as const;
 
-const RGB: Record<string, [number, number, number]> = {
+type Quadrant = keyof typeof TRUTH;
+type Colour = (typeof TRUTH)[Quadrant];
+
+// Keyed by the four truth colours rather than by `string`, so a colour with no
+// RGB value or no synonym list is a compile error instead of an `undefined` at
+// the point where the gate is being judged.
+const RGB: Record<Colour, [number, number, number]> = {
   green: [0, 158, 64],
   purple: [128, 0, 160],
   orange: [255, 140, 0],
@@ -31,7 +37,7 @@ const RGB: Record<string, [number, number, number]> = {
 };
 
 /** Words the model may reasonably use for each truth colour. */
-const SYNONYMS: Record<string, string[]> = {
+const SYNONYMS: Record<Colour, string[]> = {
   green: ["green"],
   purple: ["purple", "violet", "magenta"],
   orange: ["orange", "amber"],
@@ -52,7 +58,10 @@ const CRC_TABLE = (() => {
 
 function crc32(buf: Uint8Array): number {
   let c = 0xffffffff;
-  for (const b of buf) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
+  // The index is masked to 0..255 and CRC_TABLE has exactly 256 entries, so the
+  // lookup cannot miss; `?? 0` would corrupt the checksum rather than surface a
+  // bug, so assert the bound instead.
+  for (const b of buf) c = CRC_TABLE[(c ^ b) & 0xff]! ^ (c >>> 8);
   return (c ^ 0xffffffff) >>> 0;
 }
 
@@ -127,9 +136,9 @@ const PROMPT = [
   '{"topLeft":"<colour>","topRight":"<colour>","bottomLeft":"<colour>","bottomRight":"<colour>"}',
 ].join(" ");
 
-function extractJson(text: string): Record<string, string> | null {
+function extractJson(text: string): Record<string, unknown> | null {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate = (fenced ? fenced[1] : text).match(/\{[\s\S]*\}/);
+  const candidate = (fenced?.[1] ?? text).match(/\{[\s\S]*\}/);
   if (!candidate) return null;
   try {
     return JSON.parse(candidate[0]);
@@ -138,7 +147,7 @@ function extractJson(text: string): Record<string, string> | null {
   }
 }
 
-function matches(truth: string, reported: unknown): boolean {
+function matches(truth: Colour, reported: unknown): boolean {
   if (typeof reported !== "string") return false;
   const said = reported.toLowerCase();
   return SYNONYMS[truth].some((word) => said.includes(word));
@@ -211,7 +220,10 @@ async function main() {
   }
 
   let correct = 0;
-  for (const [quadrant, truth] of Object.entries(TRUTH)) {
+  // Object.keys widens to string[]; the assertion keeps the quadrant names
+  // typed so a renamed quadrant fails to compile rather than silently missing.
+  for (const quadrant of Object.keys(TRUTH) as Quadrant[]) {
+    const truth = TRUTH[quadrant];
     const ok = matches(truth, parsed[quadrant]);
     if (ok) correct++;
     console.log(`${ok ? "OK  " : "MISS"} ${quadrant}: expected ${truth}, got ${JSON.stringify(parsed[quadrant])}`);

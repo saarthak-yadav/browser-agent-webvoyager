@@ -19,7 +19,15 @@ else
   bun run typecheck || echo "FAILED: typecheck"
 
   echo "=== tests ==="
-  bun test || echo "FAILED: tests"
+  # `bun test` exits 0 when it matches no files, so an empty suite reads as a
+  # pass. Count first: no tests is a failure, not a green run.
+  TEST_FILES=$(find . -name '*.test.ts' -not -path './node_modules/*' | wc -l | tr -d ' ')
+  if [ "$TEST_FILES" = "0" ]; then
+    echo "FAILED: no test files found — bun test would pass vacuously"
+  else
+    echo "$TEST_FILES test file(s)"
+    bun test || echo "FAILED: tests"
+  fi
 fi
 
 echo ""

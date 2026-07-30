@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
-    // Environment setup & latest features
-    "lib": ["ESNext"],
+    // Environment setup & latest features.
+    // DOM is here because `page.evaluate(() => document...)` callbacks are
+    // serialised and run inside the browser page, where DOM globals are real.
+    // It adds declarations; it relaxes no check. The cost is that `document`
+    // also typechecks in Bun-side code, where it would throw at runtime — so
+    // browser globals belong inside evaluate callbacks and nowhere else.
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",

@@ -36,20 +36,37 @@
       real decay (BBC discontinued its market data feeds in Nov 2024; Booking--20
       hard-codes Feb 2024 dates) and 2 are sites refusing automation (Cambridge
       Dictionary, Google Search). Per-task verdicts in `tasks/decay-audit.json`.
+- [x] **Harness repaired (not a feature).** `typecheck` did not exist and
+      `typescript` was a peerDependency only, so none of the four scripts had
+      ever been typechecked; `bun test` matched zero files and exited 0.
+      Now: `typescript` is a devDependency, `bun run typecheck` is clean after
+      fixing **10 real errors** (one latent bug in the browser-relaunch path of
+      `check-reachability.ts`), and 29 tests pin the feat-003 seeded sampler and
+      the feat-002 verdict rules. `init.sh` now fails when it finds no test
+      files. **No measurement changed** — verified by re-running all three, see
+      the 2026-07-30 harness-repair entry in `docs/DECISIONS.md`.
 
 ### What's In Progress
 
-- Nothing. feat-001, feat-002 and feat-003 are closed; no feature picked up yet.
+- Nothing. feat-001, feat-002 and feat-003 are closed. feat-004 is **not
+  started, deliberately** — see below.
 
 ### What's Next
 
-1. **feat-004 — task subset selection.** Both dependencies are now answered.
+1. **feat-004 — task subset selection. Blocked on a human checkpoint, not on
+   code.** Three inputs must be decided by a person first, because each one is
+   baked into every number computed over the subset afterwards:
+   - whether Google Search is **dropped** or carried as a **known-blocked
+     stratum** (43 of 643 tasks ride on this);
+   - the **locale policy** (feat-003 conclusion 5);
+   - the **denominator rule** — what counts as attempted vs reachable-and-valid.
+
    Two constraints came out of feat-002/003 and must shape it:
    - **Landing-page reachability is not usability.** Google Search's homepage
      loads but the first query returns the unusual-traffic page. feat-004 needs
      a *first-action* probe per site, not a `goto`.
-   - **Decide the locale policy and write it down.** Amazon rendered prices in
-     INR and Google Flights defaulted its origin to the local city, both from IP
+   - **Locale drift is a live confound.** Amazon rendered prices in INR and
+     Google Flights defaulted its origin to the local city, both from IP
      geolocation. WebVoyager's 2024 reference answers assume a US locale.
 
 Still no agent code until feat-004 fixes the subset.
@@ -115,6 +132,28 @@ Still no agent code until feat-004 fixes the subset.
     cost two headline results).
 - **Sequencing:** project 1 clears its deploy gate first, then both run in
   parallel — this project's benchmark runs are long and unattended.
+- **`"DOM"` added to `tsconfig.json`'s `lib`**, so `page.evaluate` callbacks
+  typecheck.
+  - Context: that code is serialised and run inside the browser page, where DOM
+    globals are real. It adds declarations and relaxes no check — `strict` and
+    `noUncheckedIndexedAccess` are untouched, and no `any` or suppression
+    comment was added anywhere in the fixes.
+  - Cost, noted in the tsconfig comment: `document` now also typechecks in
+    Bun-side code where it would throw, so browser globals belong inside
+    `evaluate` callbacks and nowhere else.
+  - Rejected: swapping `document.querySelectorAll` for Playwright locators.
+    Playwright's CSS engine pierces open shadow roots and `querySelectorAll`
+    does not, so it would have changed feat-002's recorded `interactiveCount`.
+  - Also rejected, after building and measuring it: a narrow hand-written
+    `types/page-globals.d.ts` shim. It scopes nothing (globals leak either way),
+    its `navigator` declaration collides with `bun-types`, `skipLibCheck: true`
+    means it is the one file never checked, and with `skipLibCheck: false` it
+    yields 134 errors against Playwright's own DOM-dependent types where DOM lib
+    yields 0. Evidence in `docs/DECISIONS.md`.
+- **Pure logic extracted to `scripts/lib/` so it can be tested** — the sampler
+  (`decay-sample.ts`) and the reachability verdict rules (`classify.ts`). The
+  scripts are now I/O shells around them. Behaviour-preserving, and verified as
+  such rather than assumed.
 
 ## Files Modified This Session
 
@@ -129,7 +168,16 @@ Still no agent code until feat-004 fixes the subset.
   repo. `tasks/decay-sample.json`, `tasks/decay-audit.json` — the sample and the
   per-task verdicts.
 - `package.json`, `bun.lock`, `tsconfig.json` — project now has a real Bun
-  project with Playwright installed.
+  project with Playwright installed. Later the same day: `typescript` moved from
+  peerDependency to devDependency, a `typecheck` script added, and `"DOM"` added
+  to `lib` with the reason in a comment.
+- `scripts/lib/decay-sample.ts`, `scripts/lib/classify.ts` — new. The sampler and
+  the reachability verdict rules as pure, testable functions, lifted out of the
+  two scripts with no behaviour change.
+- `tests/decay-sample.test.ts`, `tests/classify.test.ts` — new. 29 tests, no
+  network.
+- `init.sh` — now counts test files and fails when there are none, instead of
+  reporting a green run on an empty suite.
 - `scripts/check-vision.ts` — the feat-001 gate (first source file).
 - Re-pointed at `glm-4.6v`: `feature_list.json`, `docs/ARCHITECTURE.md`,
   `docs/TASKS.md`, `docs/PLAN.md`, `README.md`, `AGENTS.md`.
@@ -147,9 +195,13 @@ Still no agent code until feat-004 fixes the subset.
 - [x] feat-003: `bun run scripts/sample-decay-tasks.ts` →
       `643 tasks in 15 sites -> sample of 20`, reproducible across runs;
       20 hand checks → 14 still-valid / 2 changed / 4 impossible.
-- [ ] No test suite yet. `package.json` now exists (Bun + Playwright), but
-      `init.sh` still prints the planning-stage message and should be updated
-      when the first real build step lands.
+- [x] Harness: `bun run typecheck` clean over all four scripts; `bun test` →
+      `29 pass, 0 fail` across `tests/decay-sample.test.ts` and
+      `tests/classify.test.ts`. Both suites were mutation-checked (four
+      mutations, each caught) so they cannot pass vacuously either.
+      Re-verified unchanged after the fixes: `tasks/decay-sample.json` md5
+      `60e3325ae8bce55f7ecd11f7ca88bb80`, three re-probed sites reproducing
+      their recorded verdicts and counts exactly, and the feat-001 gate at 4/4.
 
 ## Notes for Next Session
 
@@ -169,3 +221,16 @@ it means page load or a completed action.
 When feat-013 and feat-016 get built: `image_url.url` takes a bare base64
 string, not a `data:` URI. A `1210` error means the image bytes are bad, not
 that the plan blocks images — decode the PNG locally before believing it.
+
+The harness lesson, which applies to every feature after this one: the only bug
+typecheck found was in the **browser-relaunch path** — error recovery that no
+run had ever executed, because both feat-002 modes finished without a
+browser-level failure. feat-015's runner is mostly recovery code (resume after
+interruption, per-episode caps, a dead browser mid-run). Test those paths
+directly; a benchmark run is exactly where they fire and exactly where nobody is
+watching. Keep new logic pure and in `scripts/lib/` so it stays testable without
+a browser.
+
+`.cursor/rules/use-bun-instead-of-node-vite-npm-pnpm.mdc` was boilerplate that
+arrived as a side effect of feat-002; it was reviewed and deleted in its own
+commit. See the harness-repair entry in `docs/DECISIONS.md`.

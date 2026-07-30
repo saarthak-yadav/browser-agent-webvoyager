@@ -385,3 +385,196 @@ action. Google Search is **43 of 643 tasks**. Consequences:
 Screenshots and page text for all 20 checks are in `runs/feat-003/` (gitignored;
 regenerate with `scripts/probe-page.ts`). The Google block page includes the
 originating public IP, which is why that directory stays out of git.
+
+---
+
+## 2026-07-30 — harness repair: typecheck and tests were both silently absent
+
+Not a feature. `./init.sh` reported `FAILED: typecheck`, and `bun test` was
+passing on zero test files. Both are recorded here because both changed what the
+existing measurements are worth: an unchecked script and an untested rule are
+not evidence, and two of the three measurements this repo already carries
+(feat-002's reachability table, feat-003's sample) rest on logic no test touched.
+
+**Ran:**
+
+```
+bun add -d typescript@^5          # was a peerDependency only, so never installed
+# package.json: "scripts": { "typecheck": "tsc --noEmit" }
+bun run typecheck
+```
+
+**Got: 10 errors across all four scripts — every script in the repo, none of them
+ever typechecked.**
+
+```
+scripts/check-reachability.ts(164,47): error TS2584: Cannot find name 'document'.
+scripts/check-reachability.ts(168,21): error TS2584: Cannot find name 'document'.
+scripts/check-reachability.ts(253,20): error TS2339: Property 'close' does not exist on type 'never'.
+scripts/check-vision.ts(55,28): error TS2532: Object is possibly 'undefined'.
+scripts/check-vision.ts(115,32): error TS2345: Argument of type '(x: number, y: number) => [number, number, number] | undefined' is not assignable to parameter of type '(x: number, y: number) => [number, number, number]'.
+scripts/check-vision.ts(132,21): error TS2532: Object is possibly 'undefined'.
+scripts/check-vision.ts(144,10): error TS2532: Object is possibly 'undefined'.
+scripts/probe-page.ts(53,43): error TS2584: Cannot find name 'document'.
+scripts/sample-decay-tasks.ts(51,3): error TS2322: Type 'T | undefined' is not assignable to type 'T'.
+```
+
+They fall into three groups:
+
+1. **Three `document` errors (TS2584) — a missing environment declaration, not a
+   bug.** The code inside `page.evaluate(() => document...)` is serialised and
+   executed in the browser page, where DOM globals are real, but `tsconfig.json`
+   listed `lib: ["ESNext"]` only. Fixed by adding `"DOM"` to `lib`. **This adds
+   type declarations and relaxes no check** — `strict`,
+   `noUncheckedIndexedAccess` and the rest are untouched, and no `any` and no
+   suppression comment was added anywhere. The cost, written into the tsconfig
+   comment: `document` now also typechecks in Bun-side code, where it would
+   throw at runtime, so browser globals belong inside `evaluate` callbacks and
+   nowhere else. The alternative — replacing `document.querySelectorAll` with
+   Playwright locators — was rejected because Playwright's CSS engine pierces
+   open shadow roots and `querySelectorAll` does not, which would have changed
+   feat-002's recorded `interactiveCount` figures.
+
+   A narrow hand-written shim (`types/page-globals.d.ts` declaring only
+   `document.body.innerText`, `querySelectorAll().length` and
+   `navigator.userAgent`, with `lib` left at `["ESNext"]`) was built and measured
+   before this was settled, since "declare only what the callbacks use" is the
+   obvious way to avoid leaking globals. **It was rejected on four measured
+   grounds, not on taste:**
+
+   - **It scopes nothing.** TypeScript has no per-file `lib` and no per-file
+     globals. A Bun-side file doing `document.body?.innerText` at top level —
+     which throws `ReferenceError` at runtime — compiles clean under the shim
+     *and* under DOM lib. The shim narrows which members leak, not whether they
+     leak, so the entire argument for it fails.
+   - **`declare const navigator` collides with the real one.** `@types/node` and
+     `bun-types` both declare `navigator` (`TS2451: Cannot redeclare`), so the
+     shim was replacing an accurate type with a two-line fake. `skipLibCheck`
+     hid the collision.
+   - **Under `skipLibCheck: true` the shim is the one file the compiler never
+     checks.** `declare const bogus: ThisTypeDoesNotExist;` inside it produced
+     zero errors — hand-written approximations, unverifiable by the tool whose
+     job is verification.
+   - **Playwright's own `.d.ts` needs DOM** (53 references to `Node`,
+     `HTMLElementTagNameMap`, `SVGElement`). With `skipLibCheck` flipped to
+     `false` — a strictness *increase* someone may reasonably make later — the
+     shim config produces **134 errors** (`playwright-core/types/structs.d.ts:
+     Cannot find name 'Node'`, plus the `navigator` redeclarations) while DOM lib
+     produces **0**. The shim only appeared to work because `skipLibCheck` was
+     masking what Playwright requires.
+
+   Playwright issue #16707 asks upstream for exactly these non-global DOM types
+   and is still `P3-collecting-feedback`, so no supported scoped alternative
+   exists today. A test grepping Bun-side scripts for stray `document`/`window`
+   outside `evaluate` callbacks was considered and not built — it is the only
+   thing that would close the leak, since the type system cannot.
+2. **One real latent bug (TS2339 `close' does not exist on type 'never'`).**
+   `check-reachability.ts` held the browser as `let browser: Browser | null` and
+   assigned it only from inside a `launch()` closure, so the compiler narrowed it
+   to `null` and every use needed a `!`. The `!`s are what hid it: on the relaunch
+   path (`if (!browser.isConnected()) await launch()`), `launch()` reassigned the
+   *captured* variable, so whether the loop kept probing with a live handle
+   depended on closure capture rather than on anything visible at the call site.
+   Fixed by making `launch()` return the browser and assigning at each call site,
+   with `browser: Browser` non-nullable. Five `!` assertions disappeared.
+3. **Six strictness errors under `noUncheckedIndexedAccess`.** `RGB` and
+   `SYNONYMS` in `check-vision.ts` were `Record<string, ...>` keyed in practice
+   by four fixed colours; retyped as `Record<Colour, ...>` derived from `TRUTH`,
+   so a colour with no RGB value is now a compile error rather than an
+   `undefined` at the point the gate is judged. The regex capture group is now
+   `fenced?.[1] ?? text`. The CRC table lookup keeps a `!` with a comment: the
+   index is masked to `0..255` against a fixed 256-entry table, and a `?? 0`
+   there would corrupt a checksum instead of surfacing a bug. `draw()` in the
+   sampler returned `T | undefined` and would have silently produced a short
+   sample; it now throws.
+
+**No measurement changed. Verified, not assumed:**
+
+- `bun run scripts/sample-decay-tasks.ts` after extracting the sampler into
+  `scripts/lib/decay-sample.ts`: `tasks/decay-sample.json` md5 unchanged at
+  `60e3325ae8bce55f7ecd11f7ca88bb80`, `git status --porcelain` clean on that
+  file — byte-identical to the committed feat-003 sample.
+- `bun run scripts/check-reachability.ts --mode=headless --only=github,allrecipes,google-search`
+  after extracting the verdict rules into `scripts/lib/classify.ts`, chosen
+  because those three sites cover an OK page and both corrections below. Verdicts,
+  detail strings and counts reproduced the recorded rows exactly: GitHub
+  `OK … 5893 chars, 205 interactive`, Allrecipes `BLOCKED HTTP 402 on the main
+  document`, Google Search `OK … 179 chars, 44 interactive`. A field-by-field
+  diff of `runs/feat-002/results.json` against the pre-run copy differed in
+  `loadMs` only; the original file was then restored.
+- `bun run scripts/check-vision.ts glm-4.6v`: still `4/4 quadrants correct`,
+  `PASS`. The feat-001 gate holds after the type changes.
+- `scripts/probe-page.ts` needed no code change — the `lib` addition alone fixed
+  it — so nothing there could have moved.
+
+**Ran:** `bun test` — was searching 113 files and matching none, exiting 0.
+
+**Got: 29 tests over two files, covering the pure logic that already existed.**
+
+- `tests/decay-sample.test.ts` pins the reproducibility claim itself: the draw
+  from seed `20260730` equals `tasks/decay-sample.json` **object-for-object**,
+  not merely by id, and the source JSONL still has the 643 tasks the sample
+  records. Also: every site covered, 20 distinct tasks, a different seed gives a
+  different sample, an over-large request throws rather than returning short,
+  and — the one that would not have been obvious — a *shuffled* input file gives
+  the same sample, which is what makes the audit reproducible for a reader who
+  regenerates the task set from the WebVoyager repo in a different order.
+- `tests/classify.test.ts` pins the two classifier corrections recorded in the
+  feat-002 entry above, both of which were originally caught by eye on a
+  screenshot rather than by the code: a low-text landing page (Google's, at 179
+  chars with 44 controls) is **ok**, and an HTTP 402 is **blocked**. Around them:
+  the `&&` rule still fires when a page is both text-poor and control-poor, the
+  199/19 boundary, 202 is not a denial (Amazon and Booking land on it), a
+  Cloudflare "just a moment" 403, and the Google `/sorry` interstitial served
+  with a **200** — which status alone would miss, and which is exactly the
+  feat-003 finding. Two tests guard the no-site-specific-code invariant: no
+  hostname or brand appears in `BLOCK_PHRASES`, and `classify()` takes no URL at
+  all, so the same page content gets the same verdict whatever site served it.
+
+**The tests were mutation-checked, because a test that cannot fail is the same
+vacuous pass in a different costume.** Four mutations, each restored after:
+
+| Mutation | Caught by |
+|---|---|
+| near-empty rule reverted to the pre-correction `textChars < 200 \|\| interactive < 5` | 5 failures, incl. "classifies Google's landing page as ok" |
+| `402` removed from the hard-status list | 2 failures, incl. "classifies the Allrecipes 402 access denial as blocked" |
+| sampler seeded with `seed + 1` | 2 failures, incl. "is reproduced exactly by seed 20260730" |
+| sampler's one-draw-per-site step deleted | 3 failures, incl. "covers every site at least once" |
+
+No test touches the network. The classifier and the sampler are pure functions of
+recorded page fields and the committed task set respectively, which is why they
+are testable at all — the extraction into `scripts/lib/` was done for that
+reason and changed no behaviour, as verified above.
+
+**Concluded:**
+
+1. **`./init.sh` is green: typecheck clean, 29 tests passing.** It also now fails
+   loudly when *no* test file is found, instead of reporting a pass — the state
+   this session started in.
+2. **Nothing measured so far was wrong**, and that is a finding rather than an
+   assumption: the sample reproduces byte-identically, the three re-probed sites
+   reproduce their recorded verdicts and counts, and the vision gate still
+   passes. feat-002's and feat-003's numbers stand as written.
+3. **The one real bug found was in error-recovery code, which is the part no run
+   exercised.** Both feat-002 modes completed without a browser-level failure, so
+   the relaunch path never ran. feat-015's runner needs the same
+   backstop — per the feat-002 entry — and its recovery paths need tests, because
+   a benchmark run is precisely where "the browser died on site 7" happens and
+   precisely where nobody is watching.
+4. **`.cursor/rules/use-bun-instead-of-node-vite-npm-pnpm.mdc` was deleted**, on
+   the maintainer's decision the same day, after review. It arrived in bccce0d as
+   an editor-tooling side effect of feat-002 and has nothing to do with site
+   reachability. It is generic boilerplate: ~100 lines on `Bun.serve`, HTML
+   imports, React frontends, `bun:sqlite`, Redis and Postgres, none of which this
+   project uses or plans to (`docs/PLAN.md` puts any UI beyond the trace viewer
+   out of scope). In a public portfolio repo an interviewer reads it as noise at
+   best, and at worst as a stray file the author did not notice — against
+   AGENTS.md's "history is public and interviewers will read it". `AGENTS.md`
+   already states the stack, so nothing was lost by removing it. Removed in its
+   own commit rather than folded into the repair, so the history says plainly
+   when it left and why.
+5. **feat-004 was deliberately not started.** Its inputs are pending a human
+   checkpoint: whether Google Search is dropped or carried as a blocked stratum,
+   the locale policy raised in feat-003 conclusion 5, and which denominator rule
+   the subset is built against. Guessing any of the three would bake an
+   unexamined choice into the task set every later number is computed over.

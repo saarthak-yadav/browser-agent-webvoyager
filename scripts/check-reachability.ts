@@ -12,13 +12,16 @@
  * finding, not something to hide. A blocked site is a result.
  *
  * Block detection is generic: HTTP status plus a set of phrases that any
- * interstitial uses. There is no per-domain branch anywhere in this file.
+ * interstitial uses. There is no per-domain branch anywhere in this file. The
+ * verdict rules themselves live in `lib/classify.ts` so they can be tested
+ * without a browser; this file is the driving shell.
  *
  * Run: bun run scripts/check-reachability.ts [--mode=headless|headed|both] [--only=github,amazon]
  * Writes: runs/feat-002/<mode>/<site>.png and runs/feat-002/results.json
  */
 import { chromium, type Browser, type Page } from "playwright";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { classify, type Verdict } from "./lib/classify.ts";
 
 /** The 15 WebVoyager sites, with the start URL the benchmark uses. */
 const SITES: { id: string; name: string; url: string; tier: "easy" | "hard" }[] = [
@@ -39,37 +42,6 @@ const SITES: { id: string; name: string; url: string; tier: "easy" | "hard" }[] 
   { id: "booking", name: "Booking.com", url: "https://www.booking.com/", tier: "hard" },
 ];
 
-/**
- * Phrases that appear on bot walls, CAPTCHA interstitials and hard denials,
- * whatever the vendor. Matched against the page's visible text and title.
- */
-const BLOCK_PHRASES = [
-  "captcha",
-  "are you a robot",
-  "are you a human",
-  "verify you are human",
-  "verify that you are",
-  "unusual traffic",
-  "automated access",
-  "automated queries",
-  "access denied",
-  "permission to access",
-  "checking your browser",
-  "just a moment",
-  "enable javascript and cookies",
-  "request blocked",
-  "suspicious activity",
-  "not a robot",
-  "security check",
-  "rate limit",
-  "too many requests",
-  "sorry, we just need to make sure",
-  "type the characters",
-];
-
-/** Phrases that mean the page loaded but the site is degraded, not blocking. */
-const DEGRADED_PHRASES = ["service unavailable", "temporarily unavailable", "try again later"];
-
 const NAV_TIMEOUT_MS = 45_000;
 /** Time to let client-side interstitials render after DOMContentLoaded. */
 const SETTLE_MS = 4_000;
@@ -79,8 +51,6 @@ const SETTLE_MS = 4_000;
  * `newContext()` forever. Observed in practice, hence this backstop.
  */
 const SITE_DEADLINE_MS = 120_000;
-
-type Verdict = "ok" | "blocked" | "degraded" | "error";
 
 interface Result {
   site: string;
@@ -168,36 +138,16 @@ async function probe(page: Page, site: (typeof SITES)[number], mode: string): Pr
     .evaluate(() => document.querySelectorAll("a[href], button, input, select, textarea, [role=button]").length)
     .catch(() => null);
 
-  const haystack = `${base.title ?? ""}\n${bodyText}`.toLowerCase();
-  base.matchedPhrases = BLOCK_PHRASES.filter((p) => haystack.includes(p));
-  const degradedHits = DEGRADED_PHRASES.filter((p) => haystack.includes(p));
-
-  const status = base.httpStatus ?? 0;
-  // 402 is in here because Allrecipes serves its access-denied page with it.
-  // That is a status-code fact, not a per-domain branch — any site using 402
-  // the same way is classified the same way.
-  const hardStatus =
-    status === 402 || status === 403 || status === 429 || status === 451 || status === 503 || status >= 500;
-
-  if (base.matchedPhrases.length > 0) {
-    base.verdict = "blocked";
-    base.detail = `interstitial phrases: ${base.matchedPhrases.join(", ")} (HTTP ${status})`;
-  } else if (hardStatus) {
-    base.verdict = "blocked";
-    base.detail = `HTTP ${status} on the main document`;
-  } else if (degradedHits.length > 0) {
-    base.verdict = "degraded";
-    base.detail = `HTTP ${status}, page says: ${degradedHits.join(", ")}`;
-    // Both conditions, not either: a landing page can be legitimately text-poor
-    // and still fully usable. google.com is ~185 chars with ~50 controls and is
-    // perfectly reachable — an OR here flagged it as degraded, which was wrong.
-  } else if (base.textChars < 200 && (base.interactiveCount ?? 0) < 20) {
-    base.verdict = "degraded";
-    base.detail = `HTTP ${status} but near-empty page: ${base.textChars} chars of text, ${base.interactiveCount} interactive elements`;
-  } else {
-    base.verdict = "ok";
-    base.detail = `HTTP ${status}, ${base.textChars} chars of text, ${base.interactiveCount} interactive elements`;
-  }
+  const { verdict, detail, matchedPhrases } = classify({
+    httpStatus: base.httpStatus,
+    title: base.title,
+    bodyText,
+    textChars: base.textChars,
+    interactiveCount: base.interactiveCount,
+  });
+  base.verdict = verdict;
+  base.detail = detail;
+  base.matchedPhrases = matchedPhrases;
 
   const dir = `runs/feat-002/${mode}`;
   mkdirSync(dir, { recursive: true });
@@ -210,23 +160,21 @@ async function probe(page: Page, site: (typeof SITES)[number], mode: string): Pr
 
 async function runMode(mode: "headless" | "headed", sites: typeof SITES): Promise<Result[]> {
   const results: Result[] = [];
-  let browser: Browser | null = null;
-  const launch = async () => {
-    browser = await chromium.launch({ headless: mode === "headless" });
-    return browser;
-  };
+  const launch = (): Promise<Browser> => chromium.launch({ headless: mode === "headless" });
 
-  await launch();
-  console.log(`\n=== ${mode} — Chromium ${browser!.version()} ===`);
+  // Assigned at each call site rather than from inside `launch` so that the
+  // handle is never nullable: a relaunch replaces it, it is never absent.
+  let browser: Browser = await launch();
+  console.log(`\n=== ${mode} — Chromium ${browser.version()} ===`);
   try {
     for (const site of sites) {
       let result: Result;
       try {
         // A dead browser from the previous site must not cascade.
-        if (!browser!.isConnected()) await launch();
+        if (!browser.isConnected()) browser = await launch();
         result = await withDeadline(SITE_DEADLINE_MS, async () => {
           // Fresh context per site: no shared cookies, no warmed-up reputation.
-          const context = await browser!.newContext();
+          const context = await browser.newContext();
           const page = await context.newPage();
           const r = await probe(page, site, mode);
           await context.close();
@@ -242,15 +190,15 @@ async function runMode(mode: "headless" | "headed", sites: typeof SITES): Promis
           detail: `browser-level failure: ${err instanceof Error ? err.message.split("\n")[0] : String(err)}`,
           screenshot: null, userAgent: null,
         };
-        try { await browser!.close(); } catch { /* already gone */ }
-        await launch();
+        try { await browser.close(); } catch { /* already gone */ }
+        browser = await launch();
       }
       results.push(result);
       const flag = { ok: "OK      ", blocked: "BLOCKED ", degraded: "DEGRADED", error: "ERROR   " }[result.verdict];
       console.log(`${flag} ${result.name.padEnd(20)} ${String(result.loadMs).padStart(6)}ms  ${result.detail}`);
     }
   } finally {
-    await browser?.close().catch(() => {});
+    await browser.close().catch(() => {});
   }
   return results;
 }
