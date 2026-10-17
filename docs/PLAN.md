@@ -95,7 +95,7 @@ Answer these in an afternoon, before writing the agent:
 |---|---|
 | Sites block automated browsers | G2 measures it early. Blocked sites are a reported finding, not a problem to engineer around. |
 | Benchmark tasks are stale | G3 measures it. Report reachable vs attempted separately. |
-| GLM self-judging undermines the result | Hand-label a sample, report agreement. Non-negotiable — see RESUME-CLAIMS.md. |
+| GLM self-judging undermines the result | Hand-label a sample, report agreement. Non-negotiable. |
 | Live sites make runs non-reproducible | Record run dates, keep full traces, state the limitation in the README. |
 | Scope creep into "a product" | The out-of-scope list is binding. |
 | Flaky runs eat all the time | Hard wall-clock cap per episode from day one, not added later. |

@@ -8,7 +8,7 @@ first, every session.
 1. Run `./init.sh`.
 2. Read `feature_list.json` — pick **one** feature whose dependencies are all
    `done`. Set it to `in-progress`.
-3. Read `progress.md` and `session-handoff.md` for where the last session
+3. Read `docs/archive/progress.md` and `docs/archive/session-handoff.md` for where the last session
    stopped.
 4. Read `docs/TASKS.md` for that feature's detail and acceptance check.
 
@@ -32,7 +32,6 @@ deleted and not re-run** — feat-002's reachability table and feat-003's decay
 counts stand as recorded measurements of the old set. Reason and consequences:
 `docs/DECISIONS.md`, 2026-07-30 benchmark-change entry.
 
-Read `docs/RESUME-CLAIMS.md` before writing code.
 
 ## Invariants
 
@@ -109,7 +108,7 @@ Code that looks correct is not done. If a check cannot pass, mark the feature
 
 ## End of session
 
-Update `progress.md` and `session-handoff.md` before stopping. The next session
+Update `docs/archive/progress.md` and `docs/archive/session-handoff.md` before stopping. The next session
 starts cold with only those files.
 
 ## Stack

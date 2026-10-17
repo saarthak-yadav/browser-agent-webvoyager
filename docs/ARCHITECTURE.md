@@ -118,8 +118,8 @@ task. Run with `glm-4.6v`. Online-Mind2Web's own WebJudge publishes ~85.7%
 agreement with human labels (o4-mini-backed) — a comparison point for the
 agreement sample, not a number this project may claim.
 
-Then hand-label a stratified sample of ≥30 episodes and report agreement. See
-`docs/RESUME-CLAIMS.md` for why this is not optional.
+Then hand-label a stratified sample of ≥30 episodes and report agreement. This is
+not optional: a GLM judge grading a GLM agent is grading its own homework.
 
 ## Failure taxonomy
 
